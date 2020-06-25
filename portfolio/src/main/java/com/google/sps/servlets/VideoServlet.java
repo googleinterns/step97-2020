@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.gson.Gson;
 
 @WebServlet("/video")
 public class VideoServlet extends HttpServlet {
@@ -19,5 +20,7 @@ public class VideoServlet extends HttpServlet {
         String description = "";
         String captions = "";
         Video dummyVideo = new Video(videoId, title, description, captions);
+        response.setContentType("application/json");
+        response.getWriter().println((new Gson()).toJson(dummyVideo));
     }
 }
