@@ -11,15 +11,19 @@ import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Comparator;
 
+// A class for text queries.
 public class Query {
 
-    private String text;
+    private String queryText;
 
-    public Query (String text) {
-        this.text = text;
+    // Query constructor that directly sets text.
+    public Query (String queryText) {
+        this.queryText = queryText;
     }
 
-    public static Query makeQuery(String captions, int size) {
+    // Make a query based on salience scores given text and a query size.
+    public static Query makeQuery(String text, int size) {
+        // Set up language service.
         LanguageServiceClient languageService;
         try {
             languageService = LanguageServiceClient.create();
@@ -27,23 +31,26 @@ public class Query {
             return null;
         }
 
+        // Analyze the text.
         Document doc =
-            Document.newBuilder().setContent(captions).setType(Document.Type.PLAIN_TEXT).build();
+            Document.newBuilder().setContent(text).setType(Document.Type.PLAIN_TEXT).build();
         AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
             .setDocument(doc)
             .build();
         AnalyzeEntitiesResponse response = languageService.analyzeEntities(request);
 
-        String text = response.getEntitiesList().stream()
+        // Sort words in decreasing order of salience and take the top few.
+        String queryText = response.getEntitiesList().stream()
             .sorted(Comparator.comparingDouble(Entity::getSalience).reversed())
             .map(e -> e.getName())
             .limit(size)
             .collect(Collectors.joining(" "));
-        
-        return new Query(text);
+
+        // Construct and return a query from these words.
+        return new Query(queryText);
     }
 
     public String toString() {
-        return text;
+        return queryText;
     }
 }

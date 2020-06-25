@@ -12,25 +12,24 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+// Servlet for testing queries.
 @WebServlet("/query")
 public class QueryServlet extends HttpServlet {
 
+    private static int QUERY_SIZE = 7;
+
+    // Get a query based on one of the sample files.
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        loadSamples();
+        String fileName = request.getParameter("name");
         response.setContentType("text/plain");
-        response.getWriter().println(Query.makeQuery(samples[0], 7));
+        response.getWriter().println(Query.makeQuery(fileToString(fileName), QUERY_SIZE));
     }
 
-    private static String[] samples = new String[1];
-
-    public static void loadSamples() throws IOException{
-        samples[0] = fileToString("body_language_metadata.txt");
-    }
-
-    private static String fileToString(String path) throws IOException{
+    // Extract all the text from the selected sample file.
+    private static String fileToString(String fileName) throws IOException{
         String text = "";
-        text = new String(Files.readAllBytes(Paths.get(path).toRealPath()));
+        text = new String(Files.readAllBytes(Paths.get(fileName)));
         return text;
     }
 }
