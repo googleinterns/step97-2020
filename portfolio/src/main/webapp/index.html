@@ -8,11 +8,17 @@
   </head>
   <body>
       <p> Enter a video ID below. </p>
-      <!-- Send to the video servlet -->
+      <!-- Form for vidoe servlet -->
       <form action="/video">
       <!-- Should change to URL later -->
-      <label for="video-id-input">Id&nbsp;</label>
-      <input type="text" id="video-id-input" name="videoId"><br>
+      <label for="video-id">Id&nbsp;</label>
+      <input type="text" id="video-id" name="videoId"><br>
+      <label for="title">Title&nbsp;</label>
+      <input type="text" id="title" name="title"><br>
+      <label for="description">Description</label>
+      <input type="textarea" id="description" name="description"><br>
+      <label for="captions">Captions&nbsp;</label>
+      <input type="textarea" id="captions" name="captions"><br>
       <input type="submit" value="Submit">
   </body>
 </html>

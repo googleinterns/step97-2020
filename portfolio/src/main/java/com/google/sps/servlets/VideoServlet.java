@@ -16,9 +16,10 @@ public class VideoServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String videoId = request.getParameter(Fields.VIDEO_ID);
-        String title = "";
-        String description = "";
-        String captions = "";
+        // Extra fields in form for metadata until we can fetch them.
+        String title = request.getParameter(Fields.TITLE);
+        String description = request.getParameter(Fields.DESCRIPTION);
+        String captions = request.getParameter(Fields.CAPTIONS);
         Video dummyVideo = new Video(videoId, title, description, captions);
         response.setContentType("application/json");
         response.getWriter().println((new Gson()).toJson(dummyVideo));

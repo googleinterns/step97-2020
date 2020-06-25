@@ -4,6 +4,9 @@ package com.google.sps.data;
 // Prevents errors due to typos when writing a field name string.
 public class Fields {
     public static String VIDEO_ID = "videoId";
+    public static String TITLE = "title";
+    public static String DESCRIPTION = "description";
+    public static String CAPTIONS = "captions";
     public static String CAPTION_ID = "captionId";
     public static String VIDEO_URL = "videoUrl";
 }
