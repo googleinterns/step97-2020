@@ -14,20 +14,21 @@ import java.util.Comparator;
 // A class for text queries.
 public class Query {
 
+    private static LanguageServiceClient languageService;
+    // Static initialization as per: https://stackoverflow.com/questions/1028661/unhandled-exceptions-in-field-initializations.
+    static {
+        try {
+            languageService = LanguageServiceClient.create();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private String queryText;
 
-    // Query constructor that directly sets text.
-    public Query (String queryText) {
-        this.queryText = queryText;
-    }
-
     // Make a query based on salience scores given text and a query size.
-    public static Query makeQuery(Video video, int querySize) throws IOException {
+    public Query(Video video, int querySize) {
         // Using only title and description seems to work well.
         String metadata = video.getTitle() + " " + video.getDescription();
-
-        // Set up language service.
-        LanguageServiceClient languageService = LanguageServiceClient.create();
 
         // Analyze the text.
         Document doc =
@@ -44,8 +45,7 @@ public class Query {
             .limit(querySize)
             .collect(Collectors.joining(" "));
 
-        // Construct and return a query from these words.
-        return new Query(queryText);
+        this.queryText = queryText;
     }
 
     public String toString() {

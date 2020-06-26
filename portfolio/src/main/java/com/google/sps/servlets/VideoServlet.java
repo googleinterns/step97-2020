@@ -28,7 +28,7 @@ public class VideoServlet extends HttpServlet {
         Video dummyVideo = new Video(videoId, title, description, captions);
         
         // Calculate the query.
-        Query query = Query.makeQuery(dummyVideo, QUERY_SIZE);
+        Query query = new Query(dummyVideo, QUERY_SIZE);
 
         // Send the query text back to the user.
         response.setContentType("text/plain");
