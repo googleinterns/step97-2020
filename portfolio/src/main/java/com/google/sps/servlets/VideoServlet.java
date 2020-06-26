@@ -2,7 +2,7 @@ package com.google.sps.servlets;
 
 import com.google.sps.data.Video;
 import com.google.sps.data.Query;
-import com.google.sps.data.Fields;
+import com.google.sps.data.PropertyNames;
 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -19,12 +19,12 @@ public class VideoServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String videoId = request.getParameter(Fields.VIDEO_ID);
+        String videoId = request.getParameter(PropertyNames.VIDEO_ID);
 
         // Have the user enter video metadata until we can fetch it.
-        String title = request.getParameter(Fields.TITLE);
-        String description = request.getParameter(Fields.DESCRIPTION);
-        String captions = request.getParameter(Fields.CAPTIONS);
+        String title = request.getParameter(PropertyNames.TITLE);
+        String description = request.getParameter(PropertyNames.DESCRIPTION);
+        String captions = request.getParameter(PropertyNames.CAPTIONS);
         Video dummyVideo = new Video(videoId, title, description, captions);
         
         // Calculate the query.
