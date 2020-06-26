@@ -22,18 +22,16 @@ public class Query {
     }
 
     // Make a query based on salience scores given text and a query size.
-    public static Query makeQuery(String text, int size) {
+    public static Query makeQuery(Video video, int querySize) throws IOException {
+        // Using only title and description seems to work well.
+        String metadata = video.getTitle() + " " + video.getDescription();
+
         // Set up language service.
-        LanguageServiceClient languageService;
-        try {
-            languageService = LanguageServiceClient.create();
-        } catch (IOException e) {
-            return null;
-        }
+        LanguageServiceClient languageService = LanguageServiceClient.create();
 
         // Analyze the text.
         Document doc =
-            Document.newBuilder().setContent(text).setType(Document.Type.PLAIN_TEXT).build();
+            Document.newBuilder().setContent(metadata).setType(Document.Type.PLAIN_TEXT).build();
         AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
             .setDocument(doc)
             .build();
@@ -43,7 +41,7 @@ public class Query {
         String queryText = response.getEntitiesList().stream()
             .sorted(Comparator.comparingDouble(Entity::getSalience).reversed())
             .map(e -> e.getName())
-            .limit(size)
+            .limit(querySize)
             .collect(Collectors.joining(" "));
 
         // Construct and return a query from these words.
