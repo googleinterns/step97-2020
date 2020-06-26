@@ -2,17 +2,23 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>My Portfolio</title>
+    <title>Watch Wisely</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
   <body>
-    <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
-    </div>
+      <p> Enter a video ID below. </p>
+      <!-- Form for vidoe servlet -->
+      <form action="/video">
+      <!-- Should change to URL later -->
+      <label for="video-id">Id&nbsp;</label>
+      <input type="text" id="video-id" name="videoId"><br>
+      <label for="title">Title&nbsp;</label>
+      <input type="text" id="title" name="title"><br>
+      <label for="description">Description</label>
+      <input type="textarea" id="description" name="description"><br>
+      <label for="captions">Captions&nbsp;</label>
+      <input type="textarea" id="captions" name="captions"><br>
+      <input type="submit" value="Submit">
   </body>
 </html>
