@@ -19,9 +19,10 @@ public class SentimentToolsServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        String text = request.getParameter("text");
-        SentimentTools = new SentimentTools(text);
-        
+        String text = "I simply love dogs!";
+        SentimentTools st = new SentimentTools(text);
+        response.setContentType("text/html");
+        response.getWriter().println(st.getScore());
     }
 
 

@@ -1,43 +1,50 @@
 package com.google.sps.data;
 
+
+
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.Document.Type;
 import com.google.cloud.language.v1.AnalyzeEntitiesRequest;
 import com.google.cloud.language.v1.AnalyzeSentimentResponse;
+import com.google.cloud.language.v1.Sentiment;
 import com.google.cloud.language.v1.Entity;
+import com.google.sps.data.Fields;
+import com.google.sps.data.Video;
 import java.io.IOException;
-
 import java.util.stream.Collectors;
 import java.util.List;
-import java.util.Comparator;
 
 
 public class SentimentTools {
     //how to interpret these values: https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values
-    private float score;
-    private float magnitude;
-    /*
-    public Sentiment (Video video) {
-        
+    Sentiment sentiment;
+    //If the user passes a video in, we grab captions from the video.
+    public SentimentTools (Video video) {
+        this(video.getCaptions());
     }
-    */
-    //Text constructor for pre-integration testing purposes
-    public SentimentTools (String caption) {
-        LanguageServiceClient language = LanguageServiceClient.create()) 
-        Document doc = Document.newBuilder().setContent(caption).setType(Type.PLAIN_TEXT).build();
-        AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
-        Sentiment sentiment = response.getDocumentSentiment();
-        if (sentiment == null) {
-            System.out.println("No sentiment found");
-        } else {
-            score = sentiment.getScore();
-            magnitude = sentiment.getMagnitude();
+
+    public SentimentTools (String captions){
+        try {
+            LanguageServiceClient language = LanguageServiceClient.create(); 
+            //built a text document using captions from the video
+            Document doc = Document.newBuilder().setContent(captions).setType(Type.PLAIN_TEXT).build();
+            AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
+            this.sentiment = response.getDocumentSentiment();
+            //If there is not sentiment print statement, otherwise ???
+            if (sentiment == null) {
+                System.out.println("No sentiment found");
+            }
+        } catch (IOException e){
+            System.out.println("Yep");
         }
     }
+
     public float getScore(){
-        return score;
+        return sentiment.getScore();
     }
+
     public float getMagnitude(){
-        return score;
+        return sentiment.getMagnitude();
     }
 }

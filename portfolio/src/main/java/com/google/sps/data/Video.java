@@ -37,4 +37,12 @@ public class Video {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getCaptions() {
+        return captions;
+    }
+
+    public void setCaptions(String captions) {
+        this.captions = captions;
+    }
 }
