@@ -30,8 +30,7 @@ public class VideoServlet extends HttpServlet {
         // Calculate the query.
         Query query = new Query(dummyVideo, QUERY_SIZE);
 
-        // Send the query text back to the user.
-        response.setContentType("text/plain");
-        response.getWriter().println(query);
+        // Redirect the user to the query page.
+        response.sendRedirect("results.html?q=" + query);
     }
 }

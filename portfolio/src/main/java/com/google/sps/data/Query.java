@@ -28,7 +28,7 @@ public class Query {
     // Make a query based on salience scores given text and a query size.
     public Query(Video video, int querySize) {
         // Using only title and description seems to work well.
-        String metadata = video.getTitle() + " " + video.getDescription();
+        String metadata = (video.getTitle() + " " + video.getDescription()).toLowerCase();
 
         // Analyze the text.
         Document doc =
@@ -38,10 +38,10 @@ public class Query {
             .build();
         AnalyzeEntitiesResponse response = languageService.analyzeEntities(request);
 
-        // Sort words in decreasing order of salience and take the top few.
+        // Take top few distinct words (they are autosorted by decreasing salience).
         String queryText = response.getEntitiesList().stream()
-            .sorted(Comparator.comparingDouble(Entity::getSalience).reversed())
             .map(e -> e.getName())
+            .distinct()
             .limit(querySize)
             .collect(Collectors.joining(" "));
 
