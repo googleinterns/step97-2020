@@ -1,8 +1,8 @@
 package com.google.sps.data;
 
 // Stores field names as constants.
-// Prevents errors due to typos when writing a field name string.
-public class Fields {
+// Prevents errors due to typos when writing a property name string.
+public class PropertyNames {
     public static String VIDEO_ID = "videoId";
     public static String TITLE = "title";
     public static String DESCRIPTION = "description";
