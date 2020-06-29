@@ -20,31 +20,36 @@ public class Query {
         try {
             languageService = LanguageServiceClient.create();
         } catch (IOException e) {
-            e.printStackTrace();
+            languageService = null;
         }
     }
     private String queryText;
 
     // Make a query based on salience scores given text and a query size.
     public Query(Video video, int querySize) {
-        // Using only title and description seems to work well.
-        String metadata = (video.getTitle() + " " + video.getDescription()).toLowerCase();
+        String queryText;
+        if (languageService == null) {
+            queryText = video.getTitle();
+        } else {
+            // Using only title and description seems to work well.
+            String metadata = (video.getTitle() + " " + video.getDescription()).toLowerCase();
 
-        // Analyze the text.
-        Document doc =
-            Document.newBuilder().setContent(metadata).setType(Document.Type.PLAIN_TEXT).build();
-        AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
-            .setDocument(doc)
-            .build();
-        AnalyzeEntitiesResponse response = languageService.analyzeEntities(request);
+            // A request with a few hundred words takes around 10 seconds to process.
+            // Quotas are 600 requests/sec and 800k requests/day.
+            Document doc =
+                Document.newBuilder().setContent(metadata).setType(Document.Type.PLAIN_TEXT).build();
+            AnalyzeEntitiesRequest request = AnalyzeEntitiesRequest.newBuilder()
+                .setDocument(doc)
+                .build();
+            AnalyzeEntitiesResponse response = languageService.analyzeEntities(request);
 
-        // Take top few distinct words (they are autosorted by decreasing salience).
-        String queryText = response.getEntitiesList().stream()
-            .map(e -> e.getName())
-            .distinct()
-            .limit(querySize)
-            .collect(Collectors.joining(" "));
-
+            // Take top few distinct words (they are autosorted by decreasing salience).
+            queryText = response.getEntitiesList().stream()
+                .map(e -> e.getName())
+                .distinct()
+                .limit(querySize)
+                .collect(Collectors.joining(" "));
+        }
         this.queryText = queryText;
     }
 

@@ -18,7 +18,7 @@ public class VideoServlet extends HttpServlet {
     private static int QUERY_SIZE = 7;
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         String videoId = request.getParameter(PropertyNames.VIDEO_ID);
 
         // Have the user enter video metadata until we can fetch it.
