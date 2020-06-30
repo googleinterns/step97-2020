@@ -2,10 +2,13 @@
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
-package com.google.sps;
 import com.google.sps.data.Fields;
 import com.google.sps.data.Video;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +26,20 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        return;
+        String id = request.getParameter(Fields.VIDEO_ID);
+        if(id == null){
+            response.getWriter().println("AAAAAAAAAAAAAAAAAAAAAA");
+        }
+        Key idAsKey = KeyFactory.createKey("Video", id);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query query = new Query("Video")
+        .setFilter(new FilterPredicate("videoId", FilterOperator.EQUAL, id));
+        PreparedQuery preparedQuery = datastore.prepare(query);
+        Entity video = preparedQuery.asSingleEntity();
+        String videoObjectJson = video.getProperty("videoObjectAsJson").toString();
+        //Video videoObject = gson.fromJson(videoObjectJson, Video);
+        response.setContentType("application/json");
+        response.getWriter().println(videoObjectJson);
     }
 
       @Override
@@ -34,7 +50,7 @@ public class DataServlet extends HttpServlet {
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(videoEntity);
-        response.sendRedirect("/");
+        response.sendRedirect("/?videoId=" + video.getVideoId());
     }
 
     public Video requestToVideoObject(HttpServletRequest request){
@@ -51,7 +67,7 @@ public class DataServlet extends HttpServlet {
     public Entity videoToEntity(Video video){
         Entity videoEntity = new Entity("Video");
         videoEntity.setProperty("videoId", video.getVideoId());
-        videoEntity.setProperty("videoObjectAsJSON", new Gson().toJson(video));
+        videoEntity.setProperty("videoObjectAsJson", new Gson().toJson(video));
         return videoEntity;
     }
 }
