@@ -1,7 +1,4 @@
 package com.google.sps.data;
-
-
-
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.Document.Type;
@@ -27,11 +24,10 @@ public class SentimentTools {
     public SentimentTools (String captions){
         try {
             LanguageServiceClient language = LanguageServiceClient.create(); 
-            //built a text document using captions from the video
+            //build a text document using captions from the video
             Document doc = Document.newBuilder().setContent(captions).setType(Type.PLAIN_TEXT).build();
             AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
             this.sentiment = response.getDocumentSentiment();
-            //If there is not sentiment print statement, otherwise ???
             if (sentiment == null) {
                 System.out.println("No sentiment found");
             }
