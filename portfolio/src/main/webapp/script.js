@@ -16,11 +16,6 @@
  * Adds a random greeting to the page.
  */
 async function fetchVideoData(id) {
-  if(id === ""){
-    alert("No ID Selected!");
-    window.location.replace('/');
-    return;
-  }
   fetch('/data?videoId=' + id)  // sends a request to /data URl with a cursor and whether we want next page or not
 .then(response => response.json()) // parses the response as JSON
 .then((videoJson) => { // now we can reference the fields in myObject!
@@ -33,5 +28,11 @@ window.addEventListener("load", myInit, true); function myInit(){
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const id = urlParams.get('videoId')
-  fetchVideoData(id)
+  if(id === "") {
+    alert("No ID Selected!");
+    window.location.replace('/');
+    return;
+  } else {
+    fetchVideoData(id)
+  }
 }
