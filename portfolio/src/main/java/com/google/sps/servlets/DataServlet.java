@@ -20,7 +20,7 @@ public class DataServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         String id = request.getParameter(PropertyNames.VIDEO_ID);
-        if(id == null){
+        if(id == null || id == ""){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
