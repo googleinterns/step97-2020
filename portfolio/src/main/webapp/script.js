@@ -17,11 +17,11 @@
  */
 async function fetchVideoData(id) {
   fetch('/data?videoId=' + id)  // sends a request to /data URl with a cursor and whether we want next page or not
-.then(response => response.json()) // parses the response as JSON
-.then((videoJson) => { // now we can reference the fields in myObject!
+    .then(response => response.json()) // parses the response as JSON
+    .then((videoJson) => { // now we can reference the fields in myObject!
     document.getElementById("video-title").innerText = videoJson.title
     document.getElementById("video-description").innerText = videoJson.description;
-});
+  });
 }
 
 window.addEventListener("load", myInit, true); function myInit(){
