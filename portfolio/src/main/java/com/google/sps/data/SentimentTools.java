@@ -6,12 +6,10 @@ import com.google.cloud.language.v1.AnalyzeEntitiesRequest;
 import com.google.cloud.language.v1.AnalyzeSentimentResponse;
 import com.google.cloud.language.v1.Sentiment;
 import com.google.cloud.language.v1.Entity;
-import com.google.sps.data.Fields;
 import com.google.sps.data.Video;
 import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.List;
-
 
 public class SentimentTools {
     //how to interpret these values: https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values

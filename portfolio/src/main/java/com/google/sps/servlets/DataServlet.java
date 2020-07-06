@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-// Servlet for testing queries.
 @WebServlet("/data")
 private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 public class DataServlet extends HttpServlet {
@@ -50,7 +49,6 @@ public class DataServlet extends HttpServlet {
             datastore.put(videoEntity);
             response.sendRedirect("/?videoId=" + video.getVideoId());
         }
-
         //if we have the video in our database already we query for the ID property and redirect using that.
         response.sendRedirect("/?videoId=" + queryVideoEntity.getProperty(PropertyNames.VIDEO_ID).toString());
         
