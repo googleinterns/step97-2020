@@ -30,17 +30,20 @@ async function fetchVideoData(id) {
 
 //This event listener will listen for when the page loads
 window.addEventListener("load", myInit, true); function myInit(){
-  //WHen the page loads check for URL parameters
+  //When the page loads check for URL parameters
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const id = urlParams.get('videoId')
-  //if the ID is empty alert the user and redirect back to mainpage
-  if(id === "") {
-    alert("No ID Selected!");
-    window.location.replace('/');
-    return;
-  } else if (id !== null) {
-    //if the ID is valid we do a GET request to our database
-    fetchVideoData(id)
-  }
+    //If the id exists
+    if (id !== null) {
+        //If the id is empty, alert and redirect to main page.
+        if (id === "") {
+            alert("No ID Selected!");
+            window.location.replace('/');
+            return;
+        } else {
+            //if the ID is valid we do a GET request to our database
+            fetchVideoData(id)
+        }
+    }
 }

@@ -7,14 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 
 // Represents a video, including its ID, title, description, and captions.
 public class Video {
-
     // Fetch via the youtube API before previewing.
     private String videoId;
     private String title;
     private String description;
     private String thumbnailUrl;
     private boolean isPublic;
-
     // Fetch when analyzing.
     private String captions;
     

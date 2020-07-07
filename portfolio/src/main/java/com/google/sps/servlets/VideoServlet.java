@@ -24,11 +24,9 @@ public class VideoServlet extends HttpServlet {
         // Create the video and load its captions.
         Video video = Video.httpRequestToVideo(request);
         video.loadCaptions();
-        
         // Calculate the query and sentiment.
         Query query = new Query(video, QUERY_SIZE);
         float sentimentScore = new SentimentTools(video).getScore();
-
         // Make the param string and redirect the user to the results page.
         String paramString = "?q=" + query + "&score=" + sentimentScore + "&title=" + video.getTitle();
         response.sendRedirect("results.html" + paramString);
