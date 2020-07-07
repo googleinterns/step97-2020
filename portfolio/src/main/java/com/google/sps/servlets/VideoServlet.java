@@ -1,15 +1,16 @@
 package com.google.sps.servlets;
 
-import com.google.sps.data.Video;
-import com.google.sps.data.Query;
 import com.google.sps.data.PropertyNames;
+import com.google.sps.data.Query;
+import com.google.sps.data.SentimentTools;
+import com.google.sps.data.Video;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
 
 // Takes in a video and sends back the corresponding query for that video.
 @WebServlet("/video")
@@ -27,10 +28,12 @@ public class VideoServlet extends HttpServlet {
         String captions = request.getParameter(PropertyNames.CAPTIONS);
         Video dummyVideo = new Video(videoId, title, description, captions);
         
-        // Calculate the query.
+        // Calculate the query and sentiment.
         Query query = new Query(dummyVideo, QUERY_SIZE);
+        float sentimentScore = new SentimentTools(dummyVideo).getScore();
 
-        // Redirect the user to the query page.
-        response.sendRedirect("results.html?q=" + query);
+        // Make the param string and redirect the user to the results page.
+        String paramString = "?q=" + query + "&score=" + sentimentScore + "&title=" + title;
+        response.sendRedirect("results.html" + paramString);
     }
 }
