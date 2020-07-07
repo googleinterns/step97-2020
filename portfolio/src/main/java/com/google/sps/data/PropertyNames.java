@@ -9,4 +9,5 @@ public class PropertyNames {
     public static String CAPTIONS = "captions";
     public static String CAPTION_ID = "captionId";
     public static String VIDEO_URL = "videoUrl";
+    public static String VIDEO_OBJECT_AS_JSON = "videoObjectAsJson";
 }
