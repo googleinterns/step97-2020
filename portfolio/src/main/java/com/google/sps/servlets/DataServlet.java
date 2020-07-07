@@ -27,7 +27,7 @@ public class DataServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        //if our ID is valid we go ahead and query our database for the video object pertaining to it
+        //if our ID is valid we go ahead and query our database for the video object with given ID
         Query query = new Query("Video")
             .setFilter(new FilterPredicate("videoId", FilterOperator.EQUAL, id));
         PreparedQuery preparedQuery = datastore.prepare(query);
