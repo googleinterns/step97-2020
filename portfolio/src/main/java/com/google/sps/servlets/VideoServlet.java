@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 // Takes in a video and sends back the corresponding query for that video.
 @WebServlet("/video")
 public class VideoServlet extends HttpServlet {
-
     private static int QUERY_SIZE = 7;
 
     @Override
@@ -36,4 +35,23 @@ public class VideoServlet extends HttpServlet {
         String paramString = "?q=" + query + "&score=" + sentimentScore + "&title=" + title;
         response.sendRedirect("results.html" + paramString);
     }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        //Run a query to see if we get any results from the video ID of the POST request
+        String id = request.getParameter(PropertyNames.VIDEO_ID);
+        Query query = new Query("Video")
+            .setFilter(new FilterPredicate("videoId", FilterOperator.EQUAL, id));
+        PreparedQuery preparedQuery = datastore.prepare(query);
+        Entity queryVideoEntity = preparedQuery.asSingleEntity();
+        //if the video Id doesnt exist in our database, we convert the request to a video entity, add it to the database, and redirect. 
+        if(queryVideoEntity == null){
+            Video video = Video.httpRequestToVideo(request);
+            Entity videoEntity = Video.videoToDatastoreEntity(video);
+            datastore.put(videoEntity);
+            response.sendRedirect("/?videoId=" + video.getVideoId());
+        } else {
+            response.sendRedirect("/?videoId=" + queryVideoEntity.getProperty(PropertyNames.VIDEO_ID).toString());
+        }
+    }   
 }
