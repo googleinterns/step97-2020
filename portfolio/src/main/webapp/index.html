@@ -7,7 +7,7 @@
     <script src="script.js"></script>
   </head>
   <body>
-      <p> Enter a video ID below. </p>
+      <p> Preview a video</p>
       <!-- Form for data servlet -->
       <form action="/data" method="POST">
       <!-- Should change to URL later -->
@@ -17,13 +17,31 @@
       <input type="text" id="title" name="title"><br>
       <label for="description">Description</label><br>
       <textarea id="description" name="description" rows="4" cols="50"></textarea><br>
-      <label for="captions">Captions&nbsp;</label><br>
-      <textarea id="captions" name="captions" rows="4" cols="50"></textarea><br>
+      <label for="thumbnailUrl">ThumbNail Url&nbsp;</label>
+      <input type="text" id="thumbnailUrl" name="thumbnailUrl"><br>
+      <label for="isPublic">Public?&nbsp;</label>
+      <input type="checkbox" id="isPublic" name="isPublic"><br>
       <input type="submit" value="Submit">
       </form>
       <div id = "video-box">
         <p id = "video-title"></p>
         <p id = "video-description"></p>
       </div>
+      <p> Analyze a video </p>
+      <!-- Form for analyzing a video -->
+      <form action="/video" method="POST">
+      <!-- Should change to url later -->
+      <label for="video-id-2">Id&nbsp;</label>
+      <input type="text" id="video-id-2" name="videoId"><br>
+      <label for="title-2">Title&nbsp;</label>
+      <input type="text" id="title-2" name="title"><br>
+      <label for="description-2">Description</label><br>
+      <textarea id="description-2" name="description" rows="4" cols="50"></textarea><br>
+      <label for="thumbnailUrl-2">ThumbNail Url&nbsp;</label>
+      <input type="text" id="thumbnailUrl-2" name="thumbnailUrl"><br>
+      <label for="isPublic-2">Public?&nbsp;</label>
+      <input type="checkbox" id="isPublic-2" name="isPublic"><br>
+      <input type="submit" value="Submit">
+      </form>
   </body>
 </html>

@@ -39,7 +39,7 @@ window.addEventListener("load", myInit, true); function myInit(){
     alert("No ID Selected!");
     window.location.replace('/');
     return;
-  } else {
+  } else if (id !== null) {
     //if the ID is valid we do a GET request to our database
     fetchVideoData(id)
   }

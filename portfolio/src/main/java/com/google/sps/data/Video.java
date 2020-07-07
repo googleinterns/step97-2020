@@ -7,16 +7,31 @@ import javax.servlet.http.HttpServletRequest;
 
 // Represents a video, including its ID, title, description, and captions.
 public class Video {
+
+    // Fetch via the youtube API before previewing.
     private String videoId;
     private String title;
     private String description;
+    private String thumbnailUrl;
+    private boolean isPublic;
+
+    // Fetch when analyzing.
     private String captions;
     
-    public Video(String videoId, String title, String description, String captions) {
+    public Video(String videoId, String title, String description, String thumbnailUrl, boolean isPublic) {
         this.videoId = videoId;
         this.title = title;
         this.description = description;
-        this.captions = captions;
+        this.thumbnailUrl = thumbnailUrl;
+        this.isPublic = isPublic;
+        // Captions not yet initialized.
+        this.captions = null;
+    }
+
+    // Create video from videoId.
+    public Video(String videoId) {
+        // For Olabode to fill in.
+        this(null, null, null, null, true);
     }
 
     public static Video httpRequestToVideo(HttpServletRequest request) {
@@ -25,8 +40,9 @@ public class Video {
         // Extra fields in form for metadata until we can fetch them.
         String title = request.getParameter(PropertyNames.TITLE);
         String description = request.getParameter(PropertyNames.DESCRIPTION);
-        String captions = request.getParameter(PropertyNames.CAPTIONS);
-        Video video = new Video(videoId, title, description, captions);
+        String thumbnailUrl = request.getParameter(PropertyNames.THUMBNAIL_URL);
+        boolean isPublic = request.getParameter(PropertyNames.IS_PUBLIC) != null;
+        Video video = new Video(videoId, title, description, thumbnailUrl, isPublic);
         return video;
     }
 
@@ -61,11 +77,13 @@ public class Video {
         this.description = description;
     }
 
-    public String getCaptions() {
-        return captions;
+    // Fetch the captions and save them to the captions instance variable.
+    public void loadCaptions() {
+        // Placeholder for Olabode to fill in.
+        this.captions = description;
     }
 
-    public void setCaptions(String captions) {
-        this.captions = captions;
+    public String getCaptions() {
+        return captions;
     }
 }

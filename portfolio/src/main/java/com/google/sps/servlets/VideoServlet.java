@@ -19,21 +19,18 @@ public class VideoServlet extends HttpServlet {
     private static int QUERY_SIZE = 7;
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        String videoId = request.getParameter(PropertyNames.VIDEO_ID);
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
-        // Have the user enter video metadata until we can fetch it.
-        String title = request.getParameter(PropertyNames.TITLE);
-        String description = request.getParameter(PropertyNames.DESCRIPTION);
-        String captions = request.getParameter(PropertyNames.CAPTIONS);
-        Video dummyVideo = new Video(videoId, title, description, captions);
+        // Create the video and load its captions.
+        Video video = Video.httpRequestToVideo(request);
+        video.loadCaptions();
         
         // Calculate the query and sentiment.
-        Query query = new Query(dummyVideo, QUERY_SIZE);
-        float sentimentScore = new SentimentTools(dummyVideo).getScore();
+        Query query = new Query(video, QUERY_SIZE);
+        float sentimentScore = new SentimentTools(video).getScore();
 
         // Make the param string and redirect the user to the results page.
-        String paramString = "?q=" + query + "&score=" + sentimentScore + "&title=" + title;
+        String paramString = "?q=" + query + "&score=" + sentimentScore + "&title=" + video.getTitle();
         response.sendRedirect("results.html" + paramString);
     }
 }

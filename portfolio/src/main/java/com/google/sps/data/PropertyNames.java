@@ -10,4 +10,6 @@ public class PropertyNames {
     public static String CAPTION_ID = "captionId";
     public static String VIDEO_URL = "videoUrl";
     public static String VIDEO_OBJECT_AS_JSON = "videoObjectAsJson";
+    public static String THUMBNAIL_URL = "thumbnailUrl";
+    public static String IS_PUBLIC = "isPublic";
 }
