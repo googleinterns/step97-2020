@@ -12,17 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+//CONSTS
+const FormIDs = {
+  title: "video-title",
+  description: "video-description"
+}
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+//This function is a GET request to our database to populate our mainpage elemetns with video information
+async function fetchVideoData(id) {
+  fetch('/data?videoId=' + id) 
+    .then(response => response.json()) // parses the response as JSON
+    .then((videoJson) => { // now we can reference the fields in myObject!
+    document.getElementById(FormIDs.title).innerText = videoJson.title
+    document.getElementById(FormIDs.description).innerText = videoJson.description;
+  });
+}
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+//This event listener will listen for when the page loads
+window.addEventListener("load", myInit, true); function myInit(){
+  //WHen the page loads check for URL parameters
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const id = urlParams.get('videoId')
+  //if the ID is empty alert the user and redirect back to mainpage
+  if(id === "") {
+    alert("No ID Selected!");
+    window.location.replace('/');
+    return;
+  } else {
+    //if the ID is valid we do a GET request to our database
+    fetchVideoData(id)
+  }
 }

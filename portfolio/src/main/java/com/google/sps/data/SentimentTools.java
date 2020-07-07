@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.List;
 
-
 public class SentimentTools {
     //how to interpret these values: https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values
     Sentiment sentiment;
