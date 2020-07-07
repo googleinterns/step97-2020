@@ -1,10 +1,5 @@
 // Extract parameters from the URL (may use a Servlet to fetch details later).
 const urlParams = new URLSearchParams(window.location.search);
-const paramNames = {
-    queryText: "q",
-    videoTitle: "title",
-    sentimentScore: "score"
-}
 
 // Set the title of the page and sentiment based on parameters when the page loads.
 function initialize() {
