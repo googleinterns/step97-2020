@@ -56,7 +56,9 @@ public class DataServlet extends HttpServlet {
             Video video = Video.httpRequestToVideo(request);
             Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
+            //Get the Datastore key of the the entity we just created as a string 
             String videoEntityKey = KeyFactory.keyToString(videoEntity.getKey());
+            // pass the key to the main page through a redirect for usage later on
             response.sendRedirect("/?videoKey=" + videoEntityKey);
         } else {
             String queryVideoEntityKey = KeyFactory.keyToString(queryVideoEntity.getKey());
