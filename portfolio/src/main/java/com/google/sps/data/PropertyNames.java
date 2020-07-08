@@ -4,6 +4,7 @@ package com.google.sps.data;
 // Prevents errors due to typos when writing a property name string.
 public class PropertyNames {
     public static String VIDEO_ID = "videoId";
+    public static String VIDEO_KEY = "videoKey";
     public static String TITLE = "title";
     public static String DESCRIPTION = "description";
     public static String CAPTIONS = "captions";
