@@ -2,6 +2,9 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -23,19 +26,22 @@ public class DataServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         //Check if we get a valid video ID as a parameter 
-        String id = request.getParameter(PropertyNames.VIDEO_ID);
-        if(id == null || id.isEmpty()){
+        String videoKeyAsString = request.getParameter(PropertyNames.VIDEO_KEY);
+        if(videoKeyAsString == null || videoKeyAsString.isEmpty()){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        //if our ID is valid we go ahead and query our database for the video object with given ID
-        Query query = new Query("Video")
-            .setFilter(new FilterPredicate("videoId", FilterOperator.EQUAL, id));
-        PreparedQuery preparedQuery = datastore.prepare(query);
-        Entity video = preparedQuery.asSingleEntity();
-        String videoObjectJson = video.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON).toString();
-        response.setContentType("application/json");
-        response.getWriter().println(videoObjectJson);
+        Key videoKey = KeyFactory.stringToKey(videoKeyAsString); 
+        //grab our video using the key
+        try {
+            Entity video = datastore.get(videoKey);
+            String videoObjectJson = video.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON).toString();
+            response.setContentType("application/json");
+            response.getWriter().println(videoObjectJson);
+        } catch (EntityNotFoundException e){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
     }
     
     @Override
@@ -57,12 +63,13 @@ public class DataServlet extends HttpServlet {
             }
             Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
-            response.sendRedirect("/?videoId=" + video.getVideoId());
+            //Get the Datastore key of the the entity we just created as a string 
+            String videoEntityKey = KeyFactory.keyToString(videoEntity.getKey());
+            // pass the key to the main page through a redirect for usage later on
+            response.sendRedirect("/?videoKey=" + videoEntityKey);
         } else {
-            response.sendRedirect("/?videoId=" + queryVideoEntity.getProperty(PropertyNames.VIDEO_ID).toString());
+            String queryVideoEntityKey = KeyFactory.keyToString(queryVideoEntity.getKey());
+            response.sendRedirect("/?videoKey=" + queryVideoEntityKey);
         }
-        //if we have the video in our database already we query for the ID property and redirect using that.
-        
-        
     }
 }

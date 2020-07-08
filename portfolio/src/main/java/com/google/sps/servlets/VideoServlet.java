@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 // Takes in a video and sends back the corresponding query for that video.
 @WebServlet("/video")
 public class VideoServlet extends HttpServlet {
-
     private static int QUERY_SIZE = 7;
 
     @Override
@@ -38,4 +37,9 @@ public class VideoServlet extends HttpServlet {
         String paramString = "?q=" + query + "&score=" + sentimentScore + "&title=" + video.getTitle();
         response.sendRedirect("results.html" + paramString);
     }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        return;
+    }   
 }
