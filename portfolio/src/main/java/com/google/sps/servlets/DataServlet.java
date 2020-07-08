@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 @WebServlet("/data")
 
@@ -53,7 +54,13 @@ public class DataServlet extends HttpServlet {
         Entity queryVideoEntity = preparedQuery.asSingleEntity();
         //if the video Id doesnt exist in our database, we convert the request to a video entity, add it to the database, and redirect. 
         if(queryVideoEntity == null){
-            Video video = Video.httpRequestToVideo(request);
+            Video video;
+            try {
+                video = Video.httpRequestToVideo(request);
+            } catch (MalformedURLException e) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
             Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
             //Get the Datastore key of the the entity we just created as a string 

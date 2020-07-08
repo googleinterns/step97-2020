@@ -30,7 +30,7 @@ async function fetchVideoData(id) {
 
 //This event listener will listen for when the page loads
 window.addEventListener("load", myInit, true); function myInit(){
-  //WHen the page loads check for URL parameters
+  //When the page loads check for URL parameters
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const id = urlParams.get('videoKey')
