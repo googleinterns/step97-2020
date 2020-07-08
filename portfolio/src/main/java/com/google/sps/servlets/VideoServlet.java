@@ -7,6 +7,7 @@ import com.google.sps.data.Video;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,13 @@ public class VideoServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         // Create the video and load its captions.
-        Video video = Video.httpRequestToVideo(request);
+        Video video;
+        try {
+            video = Video.httpRequestToVideo(request);
+        } catch (MalformedURLException e) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
         video.loadCaptions();
         // Calculate the query and sentiment.
         Query query = new Query(video, QUERY_SIZE);

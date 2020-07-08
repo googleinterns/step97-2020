@@ -4,6 +4,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 // Represents a video, including its ID, title, description, and captions.
 public class Video {
@@ -11,28 +13,29 @@ public class Video {
     private String videoId;
     private String title;
     private String description;
-    private String thumbnailUrl;
+    private URL thumbnailUrl;
     private boolean isPublic;
     // Fetch when analyzing.
     private String captions;
     
-    public Video(String videoId, String title, String description, String thumbnailUrl, boolean isPublic) {
+    public Video(String videoId, String title, String description, String thumbnailUrl, boolean isPublic) 
+      throws MalformedURLException{
         this.videoId = videoId;
         this.title = title;
         this.description = description;
-        this.thumbnailUrl = thumbnailUrl;
+        this.thumbnailUrl = new URL(thumbnailUrl);
         this.isPublic = isPublic;
         // Captions not yet initialized.
         this.captions = null;
     }
 
     // Create video from videoId.
-    public Video(String videoId) {
+    public Video(String videoId) throws MalformedURLException{
         // For Olabode to fill in.
         this(null, null, null, null, true);
     }
 
-    public static Video httpRequestToVideo(HttpServletRequest request) {
+    public static Video httpRequestToVideo(HttpServletRequest request) throws MalformedURLException{
         // Get the input from the form.
         String videoId = request.getParameter(PropertyNames.VIDEO_ID);
         // Extra fields in form for metadata until we can fetch them.
