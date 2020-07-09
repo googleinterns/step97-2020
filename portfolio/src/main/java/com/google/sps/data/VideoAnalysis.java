@@ -8,7 +8,7 @@ public class VideoAnalysis {
     private float sentimentScore;
     private float sentimentMagnitude;
     private String query;
-    private int QUERY_SIZE = 7;
+    private static int QUERY_SIZE = 7;
     
     //If given a video we will run analysis on it !!THIS IS SLOWER THAN JUST PASSING IN THE VALUES IF YOU HAVE THEM!!
     public VideoAnalysis(Video video) {
@@ -35,7 +35,7 @@ public class VideoAnalysis {
     }
 
     public void setSentimentMagnitude(float magnitude) {
-        this.sentimentMagnitude = score;
+        this.sentimentMagnitude = magnitude;
     }
 
     public float getSentimentMagnitude() {
