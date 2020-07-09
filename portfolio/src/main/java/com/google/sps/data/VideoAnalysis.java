@@ -49,3 +49,4 @@ public class VideoAnalysis {
     public String getQuery(){
         return this.query;
     }
+}
