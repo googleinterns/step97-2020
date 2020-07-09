@@ -7,10 +7,10 @@ import com.google.sps.data.Video;
 
 // Represents a video analysis, holds the results from an analysis and can also analyze a video that is passed in.
 public class VideoAnalysis {
-    private static float sentimentScore;
-    private static float sentimentMagnitude;
-    private static String query;
-    private static int QUERY_SIZE = 7;
+    private float sentimentScore;
+    private float sentimentMagnitude;
+    private String query;
+    private int QUERY_SIZE = 7;
     
     //If given a video we will run analysis on it !!THIS IS SLOWER THAN JUST PASSING IN THE VALUES IF YOU HAVE THEM!!
     public VideoAnalysis(Video video) {
@@ -22,7 +22,7 @@ public class VideoAnalysis {
     }
 
     //Pass in the results from a Video analysis to create this object
-    public VideoAnalysis(String _sentimentScore, String _sentimentMagnitude, String _query) {
+    public VideoAnalysis(float _sentimentScore, float _sentimentMagnitude, String _query) {
         this.sentimentScore = _sentimentScore;
         this.sentimentMagnitude = _sentimentMagnitude;
         this.query = _query;
