@@ -14,8 +14,8 @@ public class VideoAnalysis {
     public VideoAnalysis(Video video) {
         SentimentTools sentimentAnalysis = new SentimentTools(video);
         Query queryAnalysis = new Query(video, QUERY_SIZE);
-        this.sentimentScore = SentimentTools.getScore();
-        this.sentimentMagnitude = SentimentTools.getMagnitude();
+        this.sentimentScore = sentimentAnalysis.getScore();
+        this.sentimentMagnitude = sentimentAnalysis.getMagnitude();
         this.query = queryAnalysis.toString();
     }
 
