@@ -62,7 +62,7 @@ public class Video {
     }
 
     public String getCaptions() {
-        return captions;
+        return description;
     }
 
     public void setCaptions(String captions) {

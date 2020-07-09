@@ -29,7 +29,7 @@ public class DataServlet extends HttpServlet {
         }
         //if our ID is valid we go ahead and query our database for the video object with given ID
         Query query = new Query("Video")
-            .setFilter(new FilterPredicate("videoId", FilterOperator.EQUAL, id));
+            .setFilter(new FilterPredicate(PropertyNames.VIDEO_ID, FilterOperator.EQUAL, id));
         PreparedQuery preparedQuery = datastore.prepare(query);
         Entity video = preparedQuery.asSingleEntity();
         String videoObjectJson = video.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON).toString();
@@ -42,7 +42,7 @@ public class DataServlet extends HttpServlet {
         //Run a query to see if we get any results from the video ID of the POST request
         String id = request.getParameter(PropertyNames.VIDEO_ID);
         Query query = new Query("Video")
-            .setFilter(new FilterPredicate("videoId", FilterOperator.EQUAL, id));
+            .setFilter(new FilterPredicate(PropertyNames.VIDEO_ID, FilterOperator.EQUAL, id));
         PreparedQuery preparedQuery = datastore.prepare(query);
         Entity queryVideoEntity = preparedQuery.asSingleEntity();
         //if the video Id doesnt exist in our database, we convert the request to a video entity, add it to the database, and redirect. 
