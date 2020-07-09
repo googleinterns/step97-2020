@@ -2,7 +2,7 @@ package com.google.sps.data;
 import com.google.sps.data.Query;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
-
+import java.io.IOException;
 // Represents a video analysis, holds the results from an analysis and can also analyze a video that is passed in.
 public class VideoAnalysis {
     private float sentimentScore;
@@ -18,7 +18,7 @@ public class VideoAnalysis {
         this.sentimentMagnitude = sentimentAnalysis.getMagnitude();
         this.query = queryAnalysis.toString();
     }
-    
+
     //Pass in the results from a Video analysis to create this object
     public VideoAnalysis(float _sentimentScore, float _sentimentMagnitude, String _query) {
         this.sentimentScore = _sentimentScore;
