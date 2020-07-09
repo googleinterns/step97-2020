@@ -1,22 +1,18 @@
 package com.google.sps.data;
+import com.google.gson.Gson;
 import com.google.sps.data.PropertyNames;
 import com.google.sps.data.Query;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
-import com.google.appengine.api.datastore.Entity;
-import com.google.gson.Gson;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import java.net.URL;
-import java.net.MalformedURLException;
 
-// Represents a video, including its ID, title, description, and captions.
+// Represents a video analysis, holds the results from an analysis and can also analyze a video that is passed in.
 public class VideoAnalysis {
     private static float sentimentScore;
     private static float sentimentMagnitude;
     private static String query;
     private static int QUERY_SIZE = 7;
     
+    //If given a video we will run analysis on it !!THIS IS SLOWER THAN JUST PASSING IN THE VALUES IF YOU HAVE THEM!!
     public VideoAnalysis(Video video) {
         SentimentTools sentimentAnalysis = new SentimentTools(video);
         Query queryAnalysis = new Query(video, QUERY_SIZE);
@@ -25,6 +21,7 @@ public class VideoAnalysis {
         this.query = queryAnalysis.toString();
     }
 
+    //Pass in the results from a Video analysis to create this object
     public VideoAnalysis(String _sentimentScore, String _sentimentMagnitude, String _query) {
         this.sentimentScore = _sentimentScore;
         this.sentimentMagnitude = _sentimentMagnitude;
