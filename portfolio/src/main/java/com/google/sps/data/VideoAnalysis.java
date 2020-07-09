@@ -11,14 +11,14 @@ public class VideoAnalysis {
     private static int QUERY_SIZE = 7;
     
     //If given a video we will run analysis on it !!THIS IS SLOWER THAN JUST PASSING IN THE VALUES IF YOU HAVE THEM!!
-    public VideoAnalysis(Video video) {
+    public VideoAnalysis(Video video) throws IOException {
         SentimentTools sentimentAnalysis = new SentimentTools(video);
         Query queryAnalysis = new Query(video, QUERY_SIZE);
         this.sentimentScore = sentimentAnalysis.getScore();
         this.sentimentMagnitude = sentimentAnalysis.getMagnitude();
         this.query = queryAnalysis.toString();
     }
-
+    
     //Pass in the results from a Video analysis to create this object
     public VideoAnalysis(float _sentimentScore, float _sentimentMagnitude, String _query) {
         this.sentimentScore = _sentimentScore;

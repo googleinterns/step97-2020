@@ -30,7 +30,7 @@ public class SentimentTools {
                 System.out.println("No sentiment found");
             }
         } catch (IOException e){
-            System.out.println("Yep");
+            throw new Exception("Unable to start language service!");
         }
     }
 
