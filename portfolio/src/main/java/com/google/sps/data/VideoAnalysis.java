@@ -1,6 +1,4 @@
 package com.google.sps.data;
-import com.google.gson.Gson;
-import com.google.sps.data.PropertyNames;
 import com.google.sps.data.Query;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
@@ -36,7 +34,7 @@ public class VideoAnalysis {
         return this.sentimentScore;
     }
 
-    public String setSentimentMagnitude(float magnitude) {
+    public void setSentimentMagnitude(float magnitude) {
         this.sentimentMagnitude = score;
     }
 
@@ -48,6 +46,6 @@ public class VideoAnalysis {
         this.query = query;
     }
 
-    public void getQuery(){
+    public String getQuery(){
         return this.query;
     }
