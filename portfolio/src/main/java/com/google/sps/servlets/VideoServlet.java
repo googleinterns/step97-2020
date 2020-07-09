@@ -7,7 +7,7 @@ import com.google.sps.data.Video;
 
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.lang.NullPointerException;
+import java.net.MalformedURLException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ public class VideoServlet extends HttpServlet {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // If videoId is malformed, send error status code.
         String videoId = request.getParameter(PropertyNames.VIDEO_ID);
         if (videoId == null || videoId.isEmpty()) {
@@ -42,16 +42,13 @@ public class VideoServlet extends HttpServlet {
             .setFilter(
             new FilterPredicate(PropertyNames.VIDEO_ID, FilterOperator.EQUAL, videoId));
 
-        // Get video entity from JSON
+        // Get video entity from JSON and load captions.
         Entity videoEntity = datastore.prepare(query).asSingleEntity();
-        Video video;
         Gson gson = new Gson();
-        video = gson.fromJson(
+        Video video = gson.fromJson(
             (String) videoEntity.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON),
             Video.class);
-        if (video == null) {
-            throw new IOException();
-        }
+        video.loadCaptions();
         
         // Calculate the search query and sentiment.
         float sentimentScore = new SentimentTools(video).getScore();

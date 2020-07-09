@@ -20,7 +20,7 @@ const FormIDs = {
 
 //This function is a GET request to our database to populate our mainpage elemetns with video information
 async function fetchVideoData(id) {
-  fetch('/data?videoId=' + id) 
+  fetch('/data?videoKey=' + id) 
     .then(response => response.json()) // parses the response as JSON
     .then((videoJson) => { // now we can reference the fields in myObject!
     document.getElementById(FormIDs.title).innerText = videoJson.title
@@ -30,10 +30,10 @@ async function fetchVideoData(id) {
 
 //This event listener will listen for when the page loads
 window.addEventListener("load", myInit, true); function myInit(){
-  //WHen the page loads check for URL parameters
+  //When the page loads check for URL parameters
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const id = urlParams.get('videoId')
+  const id = urlParams.get('videoKey')
   //if the ID is empty alert the user and redirect back to mainpage
   if(id === "") {
     alert("No ID Selected!");
