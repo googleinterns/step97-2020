@@ -1,5 +1,5 @@
 package com.google.sps.data;
-import com.google.sps.data.Query;
+import com.google.sps.data.SearchQuery;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
 import java.io.IOException;
@@ -7,23 +7,23 @@ import java.io.IOException;
 public class VideoAnalysis {
     private final float sentimentScore;
     private final float sentimentMagnitude;
-    private final String query;
-    private static int QUERY_SIZE = 7;
+    private final String searchQueryString;
+    private static int SEARCH_QUERY_SIZE = 7;
     
     //If given a video we will run analysis on it !!THIS IS SLOWER THAN JUST PASSING IN THE VALUES IF YOU HAVE THEM!!
     public VideoAnalysis(Video video) throws IOException {
         SentimentTools sentimentAnalysis = new SentimentTools(video);
-        Query queryAnalysis = new Query(video, QUERY_SIZE);
+        SearchQuery searchQuery = new SearchQuery(video, SEARCH_QUERY_SIZE);
         this.sentimentScore = sentimentAnalysis.getScore();
         this.sentimentMagnitude = sentimentAnalysis.getMagnitude();
-        this.query = queryAnalysis.toString();
+        this.searchQueryString = searchQuery.toString();
     }
 
     //Pass in the results from a Video analysis to create this object
-    public VideoAnalysis(float _sentimentScore, float _sentimentMagnitude, String _query) {
+    public VideoAnalysis(float _sentimentScore, float _sentimentMagnitude, String _searchQueryString) {
         this.sentimentScore = _sentimentScore;
         this.sentimentMagnitude = _sentimentMagnitude;
-        this.query = _query;
+        this.searchQueryString = _searchQueryString;
     }
 
     public float getSentimentScore(){
@@ -34,7 +34,7 @@ public class VideoAnalysis {
         return this.sentimentMagnitude;
     }
 
-    public String getQuery(){
-        return this.query;
+    public String getSearchQueryString(){
+        return this.searchQueryString;
     }
 }
