@@ -23,7 +23,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 
 // Takes in a video and sends back the corresponding search query for that video.
 @WebServlet("/video")
-public class VideoServlet extends HttpServlet {
+public class AnalysisServlet extends HttpServlet {
 
     private static int SEARCH_QUERY_SIZE = 7;
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -53,11 +53,6 @@ public class VideoServlet extends HttpServlet {
         // Calculate the search query and sentiment.
         float sentimentScore = new SentimentTools(video).getScore();
         SearchQuery searchQuery = new SearchQuery(video, SEARCH_QUERY_SIZE);
-
-        // Store results in datastore entity
-        videoEntity.setProperty(PropertyNames.SENTIMENT_SCORE, sentimentScore);
-        videoEntity.setProperty(PropertyNames.SEARCH_QUERY, searchQuery.toString());
-        datastore.put(videoEntity);
 
         // Make the param string and redirect the user to the results page.
         String paramString = "?q=" + searchQuery + "&score=" + sentimentScore + "&title=" + video.getTitle();
