@@ -43,7 +43,6 @@ async function submitVideoData() {
     document.getElementById("analysisVideoId").value = videoId;
     //Show analysis button.
     document.getElementById("analysisSubmit").style.display = "inline-block";
-
 }
 
 //This function is a GET request to our database to populate our mainpage elemetns with video information

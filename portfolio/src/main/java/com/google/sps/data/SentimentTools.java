@@ -25,11 +25,15 @@ public class SentimentTools {
     }
 
     //If the user passes a video in, we grab captions from the video.
-    public SentimentTools (Video video) {
+    public SentimentTools (Video video) throws IOException{
         this(video.getCaptions());
     }
 
-    public SentimentTools (String captions){
+    public SentimentTools (String captions) throws IOException {
+        //If static initialization failed, try again.
+        if (language == null) {
+            language = LanguageServiceClient.create();
+        }
         //build a text document using captions from the video
         Document doc = Document.newBuilder().setContent(captions).setType(Type.PLAIN_TEXT).build();
         AnalyzeSentimentResponse response = language.analyzeSentiment(doc);

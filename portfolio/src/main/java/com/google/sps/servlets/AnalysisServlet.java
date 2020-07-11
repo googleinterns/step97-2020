@@ -51,7 +51,13 @@ public class AnalysisServlet extends HttpServlet {
         video.loadCaptions();
         
         // Calculate the search query and sentiment.
-        float sentimentScore = new SentimentTools(video).getScore();
+        float sentimentScore;
+        try {
+            sentimentScore = new SentimentTools(video).getScore();
+        } catch (IOException e) {
+            sendErrorMessage(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Language service unavailable.");
+            return;
+        }
         SearchQuery searchQuery = new SearchQuery(video, SEARCH_QUERY_SIZE);
 
         // Make the param string and redirect the user to the results page.
