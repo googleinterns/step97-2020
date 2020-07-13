@@ -27,13 +27,14 @@ public class AnalysisServlet extends HttpServlet {
 
     private static int SEARCH_QUERY_SIZE = 7;
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static final boolean DEBUG = false;
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
         // If videoId is malformed, send error status code.
         String videoId = request.getParameter(PropertyNames.VIDEO_ID);
         if (videoId == null || videoId.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video ID cannot be empty.");
             return;
         }
 
@@ -51,11 +52,38 @@ public class AnalysisServlet extends HttpServlet {
         video.loadCaptions();
         
         // Calculate the search query and sentiment.
-        float sentimentScore = new SentimentTools(video).getScore();
+        float sentimentScore;
+        try {
+            sentimentScore = new SentimentTools(video).getScore();
+        } catch (IOException e) {
+            sendErrorMessage(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Language service unavailable.");
+            return;
+        }
         SearchQuery searchQuery = new SearchQuery(video, SEARCH_QUERY_SIZE);
 
         // Make the param string and redirect the user to the results page.
         String paramString = "?q=" + searchQuery + "&score=" + sentimentScore + "&title=" + video.getTitle();
-        response.sendRedirect("results.html" + paramString);
+        try {
+            response.sendRedirect("/results.html" + paramString);
+            return;
+        } catch (IOException e) {
+            if (DEBUG) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //Send an error message to the client.
+    public static void sendErrorMessage(HttpServletResponse response, int status, String message) {
+        response.setStatus(status);
+        response.setContentType("text/plain");
+        try {
+            response.getWriter().println(message);
+            return;
+        } catch (IOException e) {
+            if (DEBUG) {
+                e.printStackTrace();
+            }
+        }
     }
 }

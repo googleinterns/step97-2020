@@ -22,32 +22,45 @@ import java.net.MalformedURLException;
 
 public class DataServlet extends HttpServlet {
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static final boolean DEBUG = false;
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
         //Check if we get a valid video ID as a parameter 
         String videoKeyAsString = request.getParameter(PropertyNames.VIDEO_KEY);
         if(videoKeyAsString == null || videoKeyAsString.isEmpty()){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video key cannot be empty.");
             return;
         }
         Key videoKey = KeyFactory.stringToKey(videoKeyAsString); 
         //grab our video using the key
+        Entity video;
         try {
-            Entity video = datastore.get(videoKey);
-            String videoObjectJson = video.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON).toString();
-            response.setContentType("application/json");
-            response.getWriter().println(videoObjectJson);
+            video = datastore.get(videoKey);
         } catch (EntityNotFoundException e){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
             return;
+        }
+        String videoObjectJson = video.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON).toString();
+        response.setContentType("application/json");
+        //Try to send JSON back to the server
+        try {
+            response.getWriter().println(videoObjectJson);
+        } catch(IOException e) {
+            if (DEBUG) {
+                e.printStackTrace();
+            }
         }
     }
     
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
         //Run a query to see if we get any results from the video ID of the POST request
         String id = request.getParameter(PropertyNames.VIDEO_ID);
+        if (id == null || id.isEmpty()) {
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video ID cannot be empty.");
+            return;
+        }
         Query query = new Query("Video")
             .setFilter(new FilterPredicate(PropertyNames.VIDEO_ID, FilterOperator.EQUAL, id));
         PreparedQuery preparedQuery = datastore.prepare(query);
@@ -58,18 +71,46 @@ public class DataServlet extends HttpServlet {
             try {
                 video = Video.httpRequestToVideo(request);
             } catch (MalformedURLException e) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Invalid thumbnail URL.");
                 return;
             }
             Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
             //Get the Datastore key of the the entity we just created as a string 
             String videoEntityKey = KeyFactory.keyToString(videoEntity.getKey());
-            // pass the key to the main page through a redirect for usage later on
-            response.sendRedirect("/?videoKey=" + videoEntityKey);
+            //Send key back to the client.
+            response.setContentType("text/plain");
+            try {
+                response.getWriter().println(videoEntityKey);
+            } catch (IOException e) {
+                if (DEBUG) {
+                    e.printStackTrace();
+                }
+            }
         } else {
+            //Get entity key and send back to the client.
             String queryVideoEntityKey = KeyFactory.keyToString(queryVideoEntity.getKey());
-            response.sendRedirect("/?videoKey=" + queryVideoEntityKey);
+            response.setContentType("text/plain");
+            try {
+                response.getWriter().println(queryVideoEntityKey);
+            } catch (IOException e) {
+                if (DEBUG) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    //Send an error message to the client.
+    public static void sendErrorMessage(HttpServletResponse response, int status, String message) {
+        response.setStatus(status);
+        response.setContentType("text/plain");
+        try {
+            response.getWriter().println(message);
+        } catch (IOException e) {
+            if (DEBUG) {
+                e.printStackTrace();
+            }
         }
     }
 }

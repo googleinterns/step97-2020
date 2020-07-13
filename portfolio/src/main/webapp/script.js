@@ -18,29 +18,39 @@ const FormIDs = {
   description: "video-description"
 }
 
-//This function is a GET request to our database to populate our mainpage elemetns with video information
-async function fetchVideoData(id) {
-  fetch('/data?videoKey=' + id) 
-    .then(response => response.json()) // parses the response as JSON
-    .then((videoJson) => { // now we can reference the fields in myObject!
-    document.getElementById(FormIDs.title).innerText = videoJson.title
-    document.getElementById(FormIDs.description).innerText = videoJson.description;
-  });
+//Submit video data to the data servlet.
+async function submitVideoData() {
+    //Save video ID so that we know the video we are analyzing.
+    let videoId = document.getElementById("videoId").value;
+    //Send post request with form data.
+    const videoForm = document.getElementById("video-data-form");
+    const queryString = new URLSearchParams(new FormData(videoForm)).toString();
+    const request = new Request("/data?" + queryString, {method: "POST"});
+    const response = await fetch(request);
+    const responseText = await response.text()
+    //Alert the user if any errors occurred.
+    if (response.status >= 400) {
+        alert(responseText);
+        return;
+    }
+    //Otherwise, the response text is the key and we fetch the video data.
+    await fetchVideoData(responseText);
+    //Set hidden dummy ID field in analysis form.
+    document.getElementById("analysisVideoId").value = videoId;
+    //Show analysis button.
+    document.getElementById("analysisSubmit").style.display = "inline-block";
 }
 
-//This event listener will listen for when the page loads
-window.addEventListener("load", myInit, true); function myInit(){
-  //When the page loads check for URL parameters
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const id = urlParams.get('videoKey')
-  //if the ID is empty alert the user and redirect back to mainpage
-  if(id === "") {
-    alert("No ID Selected!");
-    window.location.replace('/');
-    return;
-  } else {
-    //if the ID is valid we do a GET request to our database
-    fetchVideoData(id)
-  }
+//This function is a GET request to our database to populate our mainpage elemetns with video information
+async function fetchVideoData(key) {
+    const response = await fetch('/data?videoKey=' + key);
+    //Alert the user and exit if errors occurred.
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
+    }
+    //Otherwise, update the page with the video data.
+    const videoJson = await response.json();
+    document.getElementById(FormIDs.title).innerText = videoJson.title
+    document.getElementById(FormIDs.description).innerText = videoJson.description;
 }
