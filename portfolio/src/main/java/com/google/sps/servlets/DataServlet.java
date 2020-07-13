@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 
 public class DataServlet extends HttpServlet {
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static final boolean DEBUG = false;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -46,7 +47,9 @@ public class DataServlet extends HttpServlet {
         try {
             response.getWriter().println(videoObjectJson);
         } catch(IOException e) {
-            e.printStackTrace();
+            if (DEBUG) {
+                e.printStackTrace();
+            }
         }
     }
     
@@ -80,7 +83,9 @@ public class DataServlet extends HttpServlet {
             try {
                 response.getWriter().println(videoEntityKey);
             } catch (IOException e) {
-                e.printStackTrace();
+                if (DEBUG) {
+                    e.printStackTrace();
+                }
             }
         } else {
             //Get entity key and send back to the client.
@@ -89,7 +94,9 @@ public class DataServlet extends HttpServlet {
             try {
                 response.getWriter().println(queryVideoEntityKey);
             } catch (IOException e) {
-                e.printStackTrace();
+                if (DEBUG) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -101,7 +108,9 @@ public class DataServlet extends HttpServlet {
         try {
             response.getWriter().println(message);
         } catch (IOException e) {
-            e.printStackTrace();
+            if (DEBUG) {
+                e.printStackTrace();
+            }
         }
     }
 }

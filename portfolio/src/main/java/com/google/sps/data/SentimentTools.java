@@ -15,7 +15,7 @@ public class SentimentTools {
     //how to interpret these values: https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values
     Sentiment sentiment;
     private static LanguageServiceClient language;
-    //static initialization for efficiency
+    //Static initialization for efficiency.
     static {
         try {
             language = LanguageServiceClient.create();
@@ -34,7 +34,7 @@ public class SentimentTools {
         if (language == null) {
             language = LanguageServiceClient.create();
         }
-        //build a text document using captions from the video
+        //Build a text document using captions from the video.
         Document doc = Document.newBuilder().setContent(captions).setType(Type.PLAIN_TEXT).build();
         AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
         this.sentiment = response.getDocumentSentiment();

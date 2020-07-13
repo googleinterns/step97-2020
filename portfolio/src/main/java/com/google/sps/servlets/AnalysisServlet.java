@@ -27,6 +27,7 @@ public class AnalysisServlet extends HttpServlet {
 
     private static int SEARCH_QUERY_SIZE = 7;
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static final boolean DEBUG = false;
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
@@ -66,7 +67,9 @@ public class AnalysisServlet extends HttpServlet {
             response.sendRedirect("/results.html" + paramString);
             return;
         } catch (IOException e) {
-            e.printStackTrace();
+            if (DEBUG) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -78,7 +81,9 @@ public class AnalysisServlet extends HttpServlet {
             response.getWriter().println(message);
             return;
         } catch (IOException e) {
-            e.printStackTrace();
+            if (DEBUG) {
+                e.printStackTrace();
+            }
         }
     }
 }
