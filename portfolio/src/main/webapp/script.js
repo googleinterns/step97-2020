@@ -20,11 +20,27 @@ function getVideoData(){
     var videoId = document.getElementById("VideoIdTextBox").value;
     var metadataServlet = "VideoMetadata?videoId=" + videoId;
     var captionsServlet = "YoutubeCaptions?videoId=" + videoId;
+
     fetch(metadataServlet).then(response => response.json()).then((video) => {
         document.getElementById("videoTitle").innerHTML = video.items[0].snippet.title;
         document.getElementById("videoDescription").innerHTML = video.items[0].snippet.localized.description;
     });
     fetch(captionsServlet).then(response =>response.text()).then(captions => {
         document.getElementById("videoCaptions").innerHTML = captions;
+    })
+}
+
+function getSearchResults(){
+    var searchQuery = document.getElementById("VideoSearchQueryTextBox").value;
+    var videoSearchServlet = "VideoSearch?searchQuery=" + searchQuery;
+
+    fetch(videoSearchServlet).then(response =>response.json()).then((searchResponse) => {
+        console.log(searchResponse);
+    })
+}
+
+function TestVideoObject(){
+    fetch("VideoTesting").then(response => response.text()).then((testValue) => {
+        console.log(testValue);
     })
 }

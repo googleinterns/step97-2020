@@ -1,4 +1,4 @@
-package com.google.sps.servlets;
+package com.google.sps.data;
 
 import java.io.IOException;
 
@@ -12,6 +12,13 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+
 import java.io.StringWriter;
 import java.io.PrintWriter;
 
@@ -22,12 +29,22 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class AUX{
-    private static final String DEVELOPER_KEY = "AIzaSyBOUFTwKaYgeEpRNZvw9tt-T1QKufhbeoM";
+    private static String DEVELOPER_KEY;
 
-    private static final String APPLICATION_NAME = "API code samples";
+    private static final String APPLICATION_NAME = "Watch Wisely";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
+    private static void GetDevKey(){
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+         DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
+            .asSingleEntity()
+            .getProperty("Key");
+        System.out.println("Dev key is: " + DEVELOPER_KEY);
+    }
+
     public static Video VideoIdToObject(String videoId) throws IOException, GeneralSecurityException{
+        GetDevKey();
         YouTube youtubeService = getService();
         // Define and execute the API request
         YouTube.Videos.List videoRequest = youtubeService.videos()
@@ -44,6 +61,7 @@ public class AUX{
     }
 
     public static ArrayList<String> SearchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
+        GetDevKey();
         YouTube youtubeService = getService();
         // Define and execute the API request
         YouTube.Search.List searchRequest = youtubeService.search()

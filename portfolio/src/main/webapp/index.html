@@ -8,8 +8,13 @@
   </head>
   <body>
     <div id="content">
+      <button onClick="TestVideoObject()">Test Video Object</button>
+      <p> Enter search keyword here <p>
+      <input type="text" id="VideoSearchQueryTextBox" value="snake"></input>
+      <button onClick="getSearchResults()">Search Query</button>
+      
       <p> Enter video Id here </p>
-      <input type="text" id="VideoIdTextBox"> </input>
+      <input type="text" id="VideoIdTextBox" value="npTC6b5-yvM"></input>
       <button onClick="getVideoData()">Get Info</button>
       <p>Title:</p>
       <p id="videoTitle"></p>
