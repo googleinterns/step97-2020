@@ -15,7 +15,8 @@
 //CONSTS
 const FormIDs = {
   title: "video-title",
-  description: "video-description"
+  description: "video-description",
+  videoKeyHolder: "video-key-holder"
 }
 
 // Save video key for the current video the user has previewed.
@@ -47,8 +48,7 @@ async function submitVideoData() {
 
 async function submitVideoForAnalysis() {
     //get the video key from our URL
-    const paramString = new URLSearchParams(window.location.search);
-    const videoKey = paramString.get('videoKey');
+    let videoKey = document.getElementById(FormIDs.videoKeyHolder).value;
     const request = new Request("/analysis?videoKey=" + videoKey, {method: "POST"});
     const response = await fetch(request);
     const responseText = await response.text()
@@ -71,9 +71,9 @@ async function fetchVideoData(key) {
         return;
     }
     //Otherwise, update the page with the video data.
-    location.href = location.href + "?videoKey=" + key;
     const videoJson = await response.json();
-    document.getElementById(FormIDs.title).innerText = videoJson.title
+    document.getElementById(FormIDs.videoKeyHolder).value = key;
+    document.getElementById(FormIDs.title).innerText = videoJson.title;
     document.getElementById(FormIDs.description).innerText = videoJson.description;
 }
 

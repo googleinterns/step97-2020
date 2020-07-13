@@ -28,6 +28,7 @@
             <p id = "video-title"></p>
             <p id = "video-description"></p>
         </div>
+<<<<<<< HEAD
         <!-- Analyze button is hidden until a video is loaded. -->
         <button id="analyze-button" onclick="analyze()" style="display:none">Analyze</button>
         <!-- Analysis container appears only after an analysis is returned. -->
@@ -42,5 +43,15 @@
                 <div class="gcse-search" data-gname="analysis-search"></div>
             </div>
         <div>
+=======
+        <button onclick="submitVideoForAnalysis()">Analyze VIDEO!!!!!</button>
+        <input type="hidden" id="video-key-holder" value = "" style="display:none">
+        <form>
+            <!-- Dummy video ID field that is hidden -->
+            <input type="text" id="analysisVideoId" name="videoId" style="display:none">
+            <!-- Hide until a video has been loaded -->
+            <input type="submit" id="analysisSubmit" value="Analyze Video" style="display:none">
+        </form>
+>>>>>>> Add mostly functional pipeline for posting analysis to datastore as a child, kind of hacky.
     </body>
 </html>
