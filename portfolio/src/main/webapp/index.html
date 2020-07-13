@@ -28,7 +28,8 @@
             <p id = "video-title"></p>
             <p id = "video-description"></p>
         </div>
-        <form action="/video" method="POST">
+        <button onclick="submitVideoForAnalysis()">Analyze Video</button>
+        <form>
             <!-- Dummy video ID field that is hidden -->
             <input type="text" id="analysisVideoId" name="videoId" style="display:none">
             <!-- Hide until a video has been loaded -->

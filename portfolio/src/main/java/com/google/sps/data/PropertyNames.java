@@ -3,6 +3,7 @@ package com.google.sps.data;
 // Stores field names as constants.
 // Prevents errors due to typos when writing a property name string.
 public class PropertyNames {
+    public static String ANALYSIS_OBJECT_AS_JSON = "analysisObjectAsJson";
     public static String CAPTIONS = "captions";
     public static String CAPTION_ID = "captionId";
     public static String DESCRIPTION = "description";
