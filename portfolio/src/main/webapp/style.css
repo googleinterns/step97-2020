@@ -4,7 +4,6 @@ h1 {
 
 #meter-container {
     font-size: 2em;
-    display: none;
     justify-content: center;
 }
 
@@ -13,16 +12,7 @@ h1 {
     height: 50px;
 }
 
-.search-flexbox {
-    display: flex;
+#search-flexbox {
     flex-direction: row;
     justify-content: center;
-}
-
-#happy-container {
-    display: none;
-}
-
-#analysis-title {
-    display: none;
 }
