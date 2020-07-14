@@ -3,6 +3,9 @@ import com.google.sps.data.Query;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
+
 // Represents a video analysis, holds the results from an analysis and can also analyze a video that is passed in.
 public class VideoAnalysis {
     private final float sentimentScore;
