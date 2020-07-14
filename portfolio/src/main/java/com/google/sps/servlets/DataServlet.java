@@ -72,9 +72,16 @@ public class DataServlet extends HttpServlet {
             Video video;
             try {
                 video = AUX.VideoIdToObject(id);
-            } catch (IOException | GeneralSecurityException e) {
+            } catch (IOException e) {
                 sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Unable to retrieve video.");
                 return;
+            } catch (IndexOutOfBoundsException e) {
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "No such video found.");
+                return;
+            } catch (GeneralSecurityException e) {
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "A security exception occurred.");
+                return;
+
             }
             Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
