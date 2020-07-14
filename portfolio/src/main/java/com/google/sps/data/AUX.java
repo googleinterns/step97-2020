@@ -19,13 +19,9 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 
-import java.io.StringWriter;
 import java.io.PrintWriter;
 
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.ArrayList;
 
 import com.google.sps.data.Video;
