@@ -1,27 +1,39 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <div id="content">
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <title>Watch Wisely</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="script.js"></script>
+    </head>
+    <body>
+        <p> Preview a video</p>
+        <!-- Form for data servlet -->
+        <form id="video-data-form">
+            <!-- Should change to URL later -->
+            <label for="videoId">Id&nbsp;</label>
+            <input type="text" id="videoId" name="videoId"><br>
+            <label for="title">Title&nbsp;</label>
+            <input type="text" id="title" name="title"><br>
+            <label for="description">Description</label><br>
+            <textarea id="description" name="description" rows="4" cols="50"></textarea><br>
+            <label for="thumbnailUrl">ThumbNail Url&nbsp;</label>
+            <input type="text" id="thumbnailUrl" name="thumbnailUrl"><br>
+            <label for="isPublic">Public?&nbsp;</label>
+            <input type="checkbox" id="isPublic" name="isPublic"><br>
+        </form>
+        <button onclick="submitVideoData()">Load Video</button>
+        <div id = "video-box">
+            <p id = "video-title"></p>
+            <p id = "video-description"></p>
+        </div>
+        <form action="/video" method="POST">
+            <!-- Dummy video ID field that is hidden -->
+            <input type="text" id="analysisVideoId" name="videoId" style="display:none">
+            <!-- Hide until a video has been loaded -->
+            <input type="submit" id="analysisSubmit" value="Analyze Video" style="display:none">
+        </form>
       <button onClick="TestVideoObject()">Test Video Object</button>
-      <p> Enter search keyword here <p>
-      <input type="text" id="VideoSearchQueryTextBox" value="snake"></input>
-      <button onClick="getSearchResults()">Search Query</button>
-      
-      <p> Enter video Id here </p>
-      <input type="text" id="VideoIdTextBox" value="npTC6b5-yvM"></input>
-      <button onClick="getVideoData()">Get Info</button>
-      <p>Title:</p>
-      <p id="videoTitle"></p>
-      <p>Description:</p>
-      <p id="videoDescription"></p>
-      <p>Captions:</p>
-      <p id="videoCaptions"></p>
-    </div>
-  </body>
+    </body>
 </html>

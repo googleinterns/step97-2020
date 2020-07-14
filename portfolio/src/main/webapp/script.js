@@ -12,35 +12,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
-* Gets the title, descriptions and english captions(if specified video has english captions) from youtube api
-* using video id specified via user.
-*/
-function getVideoData(){
-    var videoId = document.getElementById("VideoIdTextBox").value;
-    var metadataServlet = "VideoMetadata?videoId=" + videoId;
-    var captionsServlet = "YoutubeCaptions?videoId=" + videoId;
-
-    fetch(metadataServlet).then(response => response.json()).then((video) => {
-        document.getElementById("videoTitle").innerHTML = video.items[0].snippet.title;
-        document.getElementById("videoDescription").innerHTML = video.items[0].snippet.localized.description;
-    });
-    fetch(captionsServlet).then(response =>response.text()).then(captions => {
-        document.getElementById("videoCaptions").innerHTML = captions;
-    })
-}
-
-function getSearchResults(){
-    var searchQuery = document.getElementById("VideoSearchQueryTextBox").value;
-    var videoSearchServlet = "VideoSearch?searchQuery=" + searchQuery;
-
-    fetch(videoSearchServlet).then(response =>response.json()).then((searchResponse) => {
-        console.log(searchResponse);
-    })
-}
-
 function TestVideoObject(){
     fetch("VideoTesting").then(response => response.text()).then((testValue) => {
         console.log(testValue);
     })
+
+//CONSTS
+const FormIDs = {
+  title: "video-title",
+  description: "video-description"
+}
+
+//Submit video data to the data servlet.
+async function submitVideoData() {
+    //Save video ID so that we know the video we are analyzing.
+    let videoId = document.getElementById("videoId").value;
+    //Send post request with form data.
+    const videoForm = document.getElementById("video-data-form");
+    const queryString = new URLSearchParams(new FormData(videoForm)).toString();
+    const request = new Request("/data?" + queryString, {method: "POST"});
+    const response = await fetch(request);
+    const responseText = await response.text()
+    //Alert the user if any errors occurred.
+    if (response.status >= 400) {
+        alert(responseText);
+        return;
+    }
+    //Otherwise, the response text is the key and we fetch the video data.
+    await fetchVideoData(responseText);
+    //Set hidden dummy ID field in analysis form.
+    document.getElementById("analysisVideoId").value = videoId;
+    //Show analysis button.
+    document.getElementById("analysisSubmit").style.display = "inline-block";
+    
+}
+
+//This function is a GET request to our database to populate our mainpage elemetns with video information
+async function fetchVideoData(key) {
+    const response = await fetch('/data?videoKey=' + key);
+    //Alert the user and exit if errors occurred.
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
+    }
+    //Otherwise, update the page with the video data.
+    const videoJson = await response.json();
+    document.getElementById(FormIDs.title).innerText = videoJson.title;
+    document.getElementById(FormIDs.description).innerText = videoJson.description;
 }

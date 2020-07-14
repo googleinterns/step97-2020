@@ -1,9 +1,28 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+h1 {
+    text-align: center;
 }
 
-#greeting-container {
-  margin-top: 20px;
+#meter-container {
+    font-size: 2em;
+    display: none;
+    justify-content: center;
+}
+
+#happy-meter {
+    width: 450px;
+    height: 50px;
+}
+
+.search-flexbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#happy-container {
+    display: none;
+}
+
+#analysis-title {
+    display: none;
 }

@@ -61,16 +61,30 @@
     </dependency>
 
     <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.8.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
       <version>1.9.59</version>
     </dependency>
+    
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.6</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-language</artifactId>
+      <version>1.55.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    
   </dependencies>
 
   <build>
@@ -82,8 +96,12 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
+<<<<<<< HEAD
           <!-- TODO: set project ID. -->
           <deploy.projectId>olabodeige-step-2020</deploy.projectId>
+=======
+          <deploy.projectId>PROJECT_ID_HERE</deploy.projectId>
+>>>>>>> f8f28c1de4ca6010e0c925d0279510977f651fc7
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
