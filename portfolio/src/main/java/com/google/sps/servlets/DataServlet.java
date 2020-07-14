@@ -9,14 +9,16 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.sps.data.AUX;
 import com.google.sps.data.PropertyNames;
 import com.google.sps.data.Video;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.security.GeneralSecurityException;
 
 @WebServlet("/data")
 
@@ -69,9 +71,9 @@ public class DataServlet extends HttpServlet {
         if(queryVideoEntity == null){
             Video video;
             try {
-                video = Video.httpRequestToVideo(request);
-            } catch (MalformedURLException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Invalid thumbnail URL.");
+                video = AUX.VideoIdToObject(id);
+            } catch (IOException | GeneralSecurityException e) {
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Unable to retrieve video.");
                 return;
             }
             Entity videoEntity = Video.videoToDatastoreEntity(video);
