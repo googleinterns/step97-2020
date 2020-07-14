@@ -40,11 +40,11 @@ async function submitVideoData() {
         alert(responseText);
         return;
     }
+<<<<<<< HEAD
     //Otherwise, the response text is the key and we fetch the video data.
     videoKey = responseText;
     await fetchVideoData(videoKey);
     document.getElementById("analyze-button").style.display = "inline-block";
-}
 
 async function submitVideoForAnalysis() {
     //get the video key from our URL
@@ -61,11 +61,11 @@ async function submitVideoForAnalysis() {
     await fetchVideoData(responseText);
 }
 
-
-//This function is a GET request to our database to populate our mainpage elemetns with video information
-async function fetchVideoData(key) {
-    const response = await fetch('/data?videoKey=' + key);
-    //Alert the user and exit if errors occurred.
+=======
+    //Otherwise, the response text is the key and we fetch the video data.
+    await fetchVideoData(responseText);
+    //Set hidden dummy ID field in analysis form.
+    document.getElementById("analysisVideoId").value = videoId;
     if (response.status >= 400) {
         alert(await response.text());
         return;
@@ -77,6 +77,7 @@ async function fetchVideoData(key) {
     document.getElementById(FormIDs.description).innerText = videoJson.description;
 }
 
+<<<<<<< HEAD
 async function analyze() {
     //Check if video key is properly initialized.
     if (videoKey === null) {
@@ -86,10 +87,16 @@ async function analyze() {
     //Post the video for analysis.
     let request = new Request("/analysis?videoKey=" + videoKey, {method: "POST"});
     let response = await fetch(request);
+=======
+async function fetchAnalysisResults(key) {
+    const response = await fetch('/analysis?videoKey=' + key);
+    //Alert the user and exit if errors occurred.
+>>>>>>> 0936079314871ba93240b947639c2f0fcb12a129
     if (response.status >= 400) {
         alert(await response.text());
         return;
     }
+<<<<<<< HEAD
     //Get the results of the analysis.
     request = new Request("/analysis?videoKey=" + videoKey, {method: "GET"});
     response = await fetch(request);
@@ -105,4 +112,8 @@ async function analyze() {
     document.getElementById("analysis-container").style.display = "block";
     document.getElementById("happy-meter").style.display="inline";
     document.getElementById("search-flexbox").style.display="flex";
+=======
+    //Otherwise, update the page with the video data.
+    const analysisJson = await response.json();
+>>>>>>> 0936079314871ba93240b947639c2f0fcb12a129
 }

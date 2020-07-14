@@ -11,10 +11,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+<<<<<<< HEAD
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+=======
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+>>>>>>> 0936079314871ba93240b947639c2f0fcb12a129
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -100,6 +107,9 @@ public class AnalysisServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
+        Entity analysisEntity = new Entity("Analysis", videoKey);
+        analysisEntity.setProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON, new Gson().toJson(videoAnalysis));
+        datastore.put(analysisEntity);
     }
 
     // Send an error message to the client.
