@@ -4,10 +4,6 @@ import com.google.sps.data.SearchQuery;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
 import com.google.sps.data.VideoAnalysis;
-<<<<<<< HEAD
-
-=======
->>>>>>> Started work on acestry in datastore & analysis object workflow
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -15,14 +11,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-<<<<<<< HEAD
 import com.google.appengine.api.datastore.EntityNotFoundException;
-=======
->>>>>>> Started work on acestry in datastore & analysis object workflow
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
