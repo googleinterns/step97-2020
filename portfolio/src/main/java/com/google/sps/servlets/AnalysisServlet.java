@@ -40,13 +40,14 @@ public class AnalysisServlet extends HttpServlet {
         // Check if video is in database and retrieve it if it is.
         Key videoKey = KeyFactory.stringToKey(keyString);
         Entity videoEntity;
+        Entity videoAnalysisEntity;
         try {
             videoEntity = datastore.get(videoKey);
+            videoAnalysisEntity = datastore.get(videoEntity.getParent());
         } catch(EntityNotFoundException e) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
             return;
         }
-
         // Get video entity from JSON and load captions.
         Gson gson = new Gson();
         Video video = gson.fromJson(
@@ -63,8 +64,8 @@ public class AnalysisServlet extends HttpServlet {
             return;
         }
         // Store video analysis Json as property (for now).
-        videoEntity.setProperty(PropertyNames.VIDEO_ANALYSIS_JSON, gson.toJson(analysis));
-        datastore.put(videoEntity);
+        videoAnalysisEntity.setProperty(PropertyNames.VIDEO_ANALYSIS_JSON, gson.toJson(analysis));
+        datastore.put(videoAnalysisEntity);
     }
 
     @Override
@@ -78,20 +79,22 @@ public class AnalysisServlet extends HttpServlet {
         Key videoKey = KeyFactory.stringToKey(keyString);
         // Get video analysis if it exists.
         Entity videoEntity;
+        Entity videoAnalysisEntity;
         try {
             videoEntity = datastore.get(videoKey);
+            videoAnalysisEntity = datastore.get(videoEntity.getParent());
         } catch (EntityNotFoundException e) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
             return;
         }
-        if (videoEntity.getProperty(PropertyNames.VIDEO_ANALYSIS_JSON) == null) {
+        if (videoAnalysisEntity.getProperty(PropertyNames.VIDEO_ANALYSIS_JSON) == null) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "The database does not contain analysis for this video.");
             return;
         }
         // Attempt to respond with the Json.
         response.setContentType("application/json");
         try {
-            response.getWriter().println(videoEntity.getProperty(PropertyNames.VIDEO_ANALYSIS_JSON));
+            response.getWriter().println(videoAnalysisEntity.getProperty(PropertyNames.VIDEO_ANALYSIS_JSON));
         } catch (IOException e) {
             if (DEBUG) {
                 e.printStackTrace();
