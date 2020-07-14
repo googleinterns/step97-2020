@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Comparator;
 
 // A class for text queries.
-public class Query {
+public class SearchQuery {
 
     private static LanguageServiceClient languageService;
     // Static initialization as per: https://stackoverflow.com/questions/1028661/unhandled-exceptions-in-field-initializations.
@@ -26,7 +26,7 @@ public class Query {
     private String queryText;
 
     // Make a query based on salience scores given text and a query size.
-    public Query(Video video, int querySize) {
+    public SearchQuery(Video video, int querySize) {
         String queryText;
         if (languageService == null) {
             queryText = video.getTitle();
