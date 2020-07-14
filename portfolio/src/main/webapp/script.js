@@ -23,11 +23,11 @@ let videoKey = null;
 
 //Submit video data to the data servlet.
 async function submitVideoData() {
+
     //Hide the old analysis.
     document.getElementById("analysis-container").style.display = "none";
     document.getElementById("happy-meter").style.display="none";
     document.getElementById("search-flexbox").style.display="none";
-
     //Send post request with form data.
     const videoForm = document.getElementById("video-data-form");
     const queryString = new URLSearchParams(new FormData(videoForm)).toString();
@@ -45,6 +45,23 @@ async function submitVideoData() {
     document.getElementById("analyze-button").style.display = "inline-block";
 }
 
+async function submitVideoForAnalysis() {
+    //get the video key from our URL
+    const paramString = new URLSearchParams(window.location.search);
+    const videoKey = paramString.get('videoKey');
+    const request = new Request("/analysis?videoKey=" + videoKey, {method: "POST"});
+    const response = await fetch(request);
+    const responseText = await response.text()
+    //Alert the user if any errors occurred.
+    if (response.status >= 400) {
+        alert(responseText);
+        return;
+    }
+    //Otherwise, the response text is the key and we fetch the video data.
+    await fetchVideoData(responseText);
+}
+
+
 //This function is a GET request to our database to populate our mainpage elemetns with video information
 async function fetchVideoData(key) {
     const response = await fetch('/data?videoKey=' + key);
@@ -54,6 +71,7 @@ async function fetchVideoData(key) {
         return;
     }
     //Otherwise, update the page with the video data.
+    location.href = location.href + "?videoKey=" + key;
     const videoJson = await response.json();
     document.getElementById(FormIDs.title).innerText = videoJson.title
     document.getElementById(FormIDs.description).innerText = videoJson.description;
