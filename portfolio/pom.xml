@@ -96,12 +96,8 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
-<<<<<<< HEAD
           <!-- TODO: set project ID. -->
           <deploy.projectId>olabodeige-step-2020</deploy.projectId>
-=======
-          <deploy.projectId>PROJECT_ID_HERE</deploy.projectId>
->>>>>>> f8f28c1de4ca6010e0c925d0279510977f651fc7
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>

@@ -16,6 +16,7 @@ function TestVideoObject(){
     fetch("VideoTesting").then(response => response.text()).then((testValue) => {
         console.log(testValue);
     })
+}
 
 //CONSTS
 const FormIDs = {

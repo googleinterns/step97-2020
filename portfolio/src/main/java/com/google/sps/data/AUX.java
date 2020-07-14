@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.google.sps.data.Video;
+
 public class AUX{
     private static String DEVELOPER_KEY;
 
@@ -57,7 +59,8 @@ public class AUX{
         String videoDescription = videoResponse.getItems().get(0).getSnippet().getLocalized().getDescription();
         String thumbnailUrl = videoResponse.getItems().get(0).getSnippet().getThumbnails().getDefault().getUrl();
 
-        return Video.Builder(videoTitle, videoDescription);
+        Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, true);
+        return result;
     }
 
     public static ArrayList<String> SearchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
