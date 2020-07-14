@@ -18,10 +18,16 @@ const FormIDs = {
   description: "video-description"
 }
 
+// Save video key for the current video the user has previewed.
+let videoKey = null;
+
 //Submit video data to the data servlet.
 async function submitVideoData() {
-    //Save video ID so that we know the video we are analyzing.
-    let videoId = document.getElementById("videoId").value;
+    //Hide the old analysis.
+    document.getElementById("analysis-container").style.display = "none";
+    document.getElementById("happy-meter").style.display="none";
+    document.getElementById("search-flexbox").style.display="none";
+
     //Send post request with form data.
     const videoForm = document.getElementById("video-data-form");
     const queryString = new URLSearchParams(new FormData(videoForm)).toString();
@@ -34,11 +40,9 @@ async function submitVideoData() {
         return;
     }
     //Otherwise, the response text is the key and we fetch the video data.
-    await fetchVideoData(responseText);
-    //Set hidden dummy ID field in analysis form.
-    document.getElementById("analysisVideoId").value = videoId;
-    //Show analysis button.
-    document.getElementById("analysisSubmit").style.display = "inline-block";
+    videoKey = responseText;
+    await fetchVideoData(videoKey);
+    document.getElementById("analyze-button").style.display = "inline-block";
 }
 
 //This function is a GET request to our database to populate our mainpage elemetns with video information
@@ -53,4 +57,34 @@ async function fetchVideoData(key) {
     const videoJson = await response.json();
     document.getElementById(FormIDs.title).innerText = videoJson.title
     document.getElementById(FormIDs.description).innerText = videoJson.description;
+}
+
+async function analyze() {
+    //Check if video key is properly initialized.
+    if (videoKey === null) {
+        alert("No video selected.");
+        return;
+    }
+    //Post the video for analysis.
+    let request = new Request("/analysis?videoKey=" + videoKey, {method: "POST"});
+    let response = await fetch(request);
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
+    }
+    //Get the results of the analysis.
+    request = new Request("/analysis?videoKey=" + videoKey, {method: "GET"});
+    response = await fetch(request);
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
+    }
+
+    //Update and show the analysis with the response fields.
+    const responseJson = await response.json();
+    document.getElementById("happy-meter").value = responseJson.sentimentScore;
+    google.search.cse.element.getElement("analysis-search").execute(responseJson.searchQueryString);
+    document.getElementById("analysis-container").style.display = "block";
+    document.getElementById("happy-meter").style.display="inline";
+    document.getElementById("search-flexbox").style.display="flex";
 }
