@@ -50,13 +50,13 @@ public class AUX{
         VideoListResponse videoResponse = videoRequest.setKey(DEVELOPER_KEY)
             .setId(videoId)
             .execute();
-            
+
         String videoTitle = videoResponse.getItems().get(0).getSnippet().getTitle();
         String videoDescription = videoResponse.getItems().get(0).getSnippet().getLocalized().getDescription();
         String thumbnailUrl = videoResponse.getItems().get(0).getSnippet().getThumbnails().getDefault().getUrl();
+        boolean isPublic = !videoResponse.getItems().get(0).getStatus().getPrivacyStatus().equals("private");
 
-        // TODO: Figure out how to get privacy status.
-        Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, true);
+        Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
         return result;
     }
 
