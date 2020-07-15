@@ -1,44 +1,38 @@
 package com.google.sps.data;
 
-import java.io.IOException;
-
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-
+import com.google.sps.data.Video;
+import java.io.IOException;
 import java.io.PrintWriter;
-
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
-import com.google.sps.data.Video;
-
 public class AUX{
-    private static String DEVELOPER_KEY;
+    private static String DEVELOPER_KEY = null;
 
     private static final String APPLICATION_NAME = "Watch Wisely";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
     private static void GetDevKey(){
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-         DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
-            .asSingleEntity()
-            .getProperty("Key");
-        System.out.println("Dev key is: " + DEVELOPER_KEY);
+        if(DEVELOPER_KEY == null){
+            DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+            DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
+                .asSingleEntity()
+                .getProperty("Key");
+        }
     }
 
     public static Video VideoIdToObject(String videoId) throws IOException, GeneralSecurityException{
@@ -50,13 +44,11 @@ public class AUX{
         VideoListResponse videoResponse = videoRequest.setKey(DEVELOPER_KEY)
             .setId(videoId)
             .execute();
-
-        String videoTitle = videoResponse.getItems().get(0).getSnippet().getTitle();
-        String videoDescription = videoResponse.getItems().get(0).getSnippet().getLocalized().getDescription();
-        String thumbnailUrl = videoResponse.getItems().get(0).getSnippet().getThumbnails().getDefault().getUrl();
-        // Figure out a reliable way to retrieve this if possible.
+        com.google.api.services.youtube.model.Video video = videoResponse.getItems().get(0);
+        String videoTitle = video.getSnippet().getTitle();
+        String videoDescription = video.getSnippet().getLocalized().getDescription();
+        String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
         boolean isPublic = true;
-
         Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
         return result;
     }
@@ -71,12 +63,10 @@ public class AUX{
         SearchListResponse searchResponse = searchRequest.setQ(query)
             .setKey(DEVELOPER_KEY)
             .execute();
-        
         ArrayList<String> videoIdList = new ArrayList<String>();
         for(int i = 0; i < searchResponse.getItems().size(); i++){
             videoIdList.add(searchResponse.getItems().get(i).getId().getVideoId());
         }
-
         return videoIdList;
     }
 
