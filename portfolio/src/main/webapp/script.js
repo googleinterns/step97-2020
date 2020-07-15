@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function TestVideoObject(){
+    fetch("VideoTesting").then(response => response.text()).then((testValue) => {
+        console.log(testValue);
+    })
+}
+
 //CONSTS
 const FormIDs = {
 title: "video-title",
@@ -55,7 +61,7 @@ async function fetchVideoData(key) {
     }
     //Otherwise, update the page with the video data.
     const videoJson = await response.json();
-    document.getElementById(FormIDs.title).innerText = videoJson.title
+    document.getElementById(FormIDs.title).innerText = videoJson.title;
     document.getElementById(FormIDs.description).innerText = videoJson.description;
 }
 
