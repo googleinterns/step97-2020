@@ -53,6 +53,7 @@ public class VideoAnalysis {
 
     public boolean isExpiredAnalysis(){
         LocalDate now = LocalDate.now();
-        Period diff = Period.between(Lthis.timestamp, now);
+        Period diff = Period.between(this.timestamp, now);
         return diff.days() >= 7);
+    }
 }
