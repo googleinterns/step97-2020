@@ -50,10 +50,7 @@ public class AnalysisServlet extends HttpServlet {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
             return;
         }
-        Gson gson = new Gson();
-        Video video = gson.fromJson(
-            (String) videoEntity.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON),
-            Video.class);
+        Video video = Video.videoFromDatastoreEntity(videoEntity);
         video.loadCaptions();
         // Create the video analysis.
         VideoAnalysis analysis;
@@ -64,6 +61,7 @@ public class AnalysisServlet extends HttpServlet {
             return;
         }
         // Store video analysis Json as property (for now).
+        Gson gson = new Gson();
         videoEntity.setProperty(PropertyNames.VIDEO_ANALYSIS_JSON, gson.toJson(analysis));
         datastore.put(videoEntity);
     }

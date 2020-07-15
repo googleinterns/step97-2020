@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Text;
 import com.google.sps.data.AUX;
 import com.google.sps.data.PropertyNames;
 import com.google.sps.data.Video;
@@ -43,7 +44,7 @@ public class DataServlet extends HttpServlet {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
             return;
         }
-        String videoObjectJson = video.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON).toString();
+        String videoObjectJson = ((Text) video.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON)).getValue();
         response.setContentType("application/json");
         //Try to send JSON back to the server
         try {

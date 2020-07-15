@@ -46,7 +46,7 @@ public class AUX{
         YouTube youtubeService = getService();
         // Define and execute the API request
         YouTube.Videos.List videoRequest = youtubeService.videos()
-            .list("snippet");
+            .list("snippet, status");
         VideoListResponse videoResponse = videoRequest.setKey(DEVELOPER_KEY)
             .setId(videoId)
             .execute();

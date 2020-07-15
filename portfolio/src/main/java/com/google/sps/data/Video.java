@@ -1,6 +1,7 @@
 package com.google.sps.data;
 import com.google.sps.data.PropertyNames;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Text;
 import com.google.gson.Gson;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,8 +51,15 @@ public class Video {
     public static Entity videoToDatastoreEntity(Video video){
         Entity videoEntity = new Entity("Video");
         videoEntity.setProperty(PropertyNames.VIDEO_ID, video.getVideoId());
-        videoEntity.setProperty(PropertyNames.VIDEO_OBJECT_AS_JSON, new Gson().toJson(video));
+        // Use datastore Text object since Strings can exceed maximum property length.
+        videoEntity.setProperty(PropertyNames.VIDEO_OBJECT_AS_JSON, new Text(new Gson().toJson(video)));
         return videoEntity;
+    }
+
+    public static Video videoFromDatastoreEntity(Entity videoEntity) {
+        return new Gson().fromJson(
+        ((Text) videoEntity.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON)).getValue(),
+         Video.class);
     }
 
     public String getVideoId() {
