@@ -64,7 +64,7 @@ public class AnalysisServlet extends HttpServlet {
             return;
         }
         // Store video analysis Json as property (for now).
-        videoAnalysisEntity.setProperty(PropertyNames.VIDEO_ANALYSIS_JSON, gson.toJson(analysis));
+        videoAnalysisEntity.setProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON, gson.toJson(analysis));
         datastore.put(videoAnalysisEntity);
     }
 
@@ -81,20 +81,19 @@ public class AnalysisServlet extends HttpServlet {
         Entity videoEntity;
         Entity videoAnalysisEntity;
         try {
-            videoEntity = datastore.get(videoKey);
-            videoAnalysisEntity = datastore.get(videoEntity.getParent());
+            videoAnalysisEntity = datastore.get(videoKey.getParent());
         } catch (EntityNotFoundException e) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
             return;
         }
-        if (videoAnalysisEntity.getProperty(PropertyNames.VIDEO_ANALYSIS_JSON) == null) {
+        if (videoAnalysisEntity.getProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON) == null) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "The database does not contain analysis for this video.");
             return;
         }
         // Attempt to respond with the Json.
         response.setContentType("application/json");
         try {
-            response.getWriter().println(videoAnalysisEntity.getProperty(PropertyNames.VIDEO_ANALYSIS_JSON));
+            response.getWriter().println(videoAnalysisEntity.getProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON));
         } catch (IOException e) {
             if (DEBUG) {
                 e.printStackTrace();
