@@ -54,10 +54,11 @@ public class AUX{
         VideoListResponse videoResponse = videoRequest.setKey(DEVELOPER_KEY)
             .setId(videoId)
             .execute();
-            
-        String videoTitle = videoResponse.getItems().get(0).getSnippet().getTitle();
-        String videoDescription = videoResponse.getItems().get(0).getSnippet().getLocalized().getDescription();
-        String thumbnailUrl = videoResponse.getItems().get(0).getSnippet().getThumbnails().getDefault().getUrl();
+        
+        com.google.api.services.youtube.model.Video video = videoResponse.getItems().get(0);
+        String videoTitle = video.getSnippet().getTitle();
+        String videoDescription = video.getSnippet().getLocalized().getDescription();
+        String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
 
         Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, true);
         return result;
