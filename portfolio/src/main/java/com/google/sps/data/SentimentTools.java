@@ -14,23 +14,32 @@ import java.util.List;
 public class SentimentTools {
     //how to interpret these values: https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values
     Sentiment sentiment;
+    private static LanguageServiceClient language;
+    //Static initialization for efficiency.
+    static {
+        try {
+            language = LanguageServiceClient.create();
+        } catch (IOException e) {
+            language = null;
+        }
+    }
+
     //If the user passes a video in, we grab captions from the video.
-    public SentimentTools (Video video) {
+    public SentimentTools (Video video) throws IOException{
         this(video.getCaptions());
     }
 
-    public SentimentTools (String captions){
-        try {
-            LanguageServiceClient language = LanguageServiceClient.create(); 
-            //build a text document using captions from the video
-            Document doc = Document.newBuilder().setContent(captions).setType(Type.PLAIN_TEXT).build();
-            AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
-            this.sentiment = response.getDocumentSentiment();
-            if (sentiment == null) {
-                System.out.println("No sentiment found");
-            }
-        } catch (IOException e){
-            System.out.println("Could Not Start Language Serivce");
+    public SentimentTools (String captions) throws IOException {
+        //If static initialization failed, try again.
+        if (language == null) {
+            language = LanguageServiceClient.create();
+        }
+        //Build a text document using captions from the video.
+        Document doc = Document.newBuilder().setContent(captions).setType(Type.PLAIN_TEXT).build();
+        AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
+        this.sentiment = response.getDocumentSentiment();
+        if (sentiment == null) {
+            System.out.println("No sentiment found");
         }
     }
 
