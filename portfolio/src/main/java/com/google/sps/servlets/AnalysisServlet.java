@@ -1,11 +1,9 @@
 package com.google.sps.servlets;
-
 import com.google.sps.data.PropertyNames;
 import com.google.sps.data.SearchQuery;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
 import com.google.sps.data.VideoAnalysis;
-
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -13,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -28,7 +25,6 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 // Takes in a video and sends back the corresponding search query for that video.
 @WebServlet("/analysis")
 public class AnalysisServlet extends HttpServlet {
-
     private static int SEARCH_QUERY_SIZE = 7;
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private static final boolean DEBUG = false;
@@ -44,12 +40,15 @@ public class AnalysisServlet extends HttpServlet {
         // Check if video is in database and retrieve it if it is.
         Key videoKey = KeyFactory.stringToKey(keyString);
         Entity videoEntity;
+        Entity videoAnalysisEntity;
         try {
             videoEntity = datastore.get(videoKey);
+            videoAnalysisEntity = datastore.get(videoEntity.getParent());
         } catch(EntityNotFoundException e) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
             return;
         }
+        // Get video entity from JSON and load captions.
         Gson gson = new Gson();
         Video video = gson.fromJson(
             (String) videoEntity.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON),
@@ -59,13 +58,14 @@ public class AnalysisServlet extends HttpServlet {
         VideoAnalysis analysis;
         try {
             analysis = new VideoAnalysis(video);
+
         } catch (IOException e) {
             sendErrorMessage(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Video analysis failed.");
             return;
         }
         // Store video analysis Json as property (for now).
-        videoEntity.setProperty(PropertyNames.VIDEO_ANALYSIS_JSON, gson.toJson(analysis));
-        datastore.put(videoEntity);
+        videoAnalysisEntity.setProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON, gson.toJson(analysis));
+        datastore.put(videoAnalysisEntity);
     }
 
     @Override
@@ -79,20 +79,21 @@ public class AnalysisServlet extends HttpServlet {
         Key videoKey = KeyFactory.stringToKey(keyString);
         // Get video analysis if it exists.
         Entity videoEntity;
+        Entity videoAnalysisEntity;
         try {
-            videoEntity = datastore.get(videoKey);
+            videoAnalysisEntity = datastore.get(videoKey.getParent());
         } catch (EntityNotFoundException e) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
             return;
         }
-        if (videoEntity.getProperty(PropertyNames.VIDEO_ANALYSIS_JSON) == null) {
+        if (videoAnalysisEntity.getProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON) == null) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "The database does not contain analysis for this video.");
             return;
         }
         // Attempt to respond with the Json.
         response.setContentType("application/json");
         try {
-            response.getWriter().println(videoEntity.getProperty(PropertyNames.VIDEO_ANALYSIS_JSON));
+            response.getWriter().println(videoAnalysisEntity.getProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON));
         } catch (IOException e) {
             if (DEBUG) {
                 e.printStackTrace();

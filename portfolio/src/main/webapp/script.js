@@ -14,8 +14,8 @@
 
 //CONSTS
 const FormIDs = {
-  title: "video-title",
-  description: "video-description"
+title: "video-title",
+description: "video-description"
 }
 
 // Save video key for the current video the user has previewed.
