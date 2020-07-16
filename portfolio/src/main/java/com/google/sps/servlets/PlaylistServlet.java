@@ -19,9 +19,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
@@ -33,15 +37,18 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 
 import com.google.sps.data.PropertyNames;
+import com.google.sps.data.Video;
 
 @WebServlet("/playlist")
 public class PlaylistServlet extends HttpServlet{
 
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static boolean DEBUG = false;
 
     // Build youtube service using dummy HttpRequestInitializer.
     private static YouTube youtubeService = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(),
@@ -72,6 +79,37 @@ public class PlaylistServlet extends HttpServlet{
             .setPlaylistId(playlistId)
             .setMaxResults(100L)
             .execute();
-        response.getWriter().println(playlistResponse);
+        List<Video> playlistVideos;
+        try {
+            playlistVideos = playlistResponse.getItems().stream()
+            .map(item -> {
+                try {
+                    return Video.videoFromPlaylistItem(item);
+                } catch (MalformedURLException e) {
+                    throw new UncheckedIOException(e);
+                }
+            })
+            .collect(Collectors.toList());
+        } catch (UncheckedIOException e) {
+            sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Unable to retrieve video thumbnail.");
+            return;
+        }
+        List<String> playlistKeys = new ArrayList<>();
+        for (Video video: playlistVideos) {
+            datastore.put(Video.videoToDatastoreEntity(video));
+        }
+    }
+    // Send an error message to the client.
+    public static void sendErrorMessage(HttpServletResponse response, int status, String message) {
+        response.setStatus(status);
+        response.setContentType("text/plain");
+        try {
+            response.getWriter().println(message);
+            return;
+        } catch (IOException e) {
+            if (DEBUG) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.google.sps.data;
 import com.google.sps.data.PropertyNames;
+import com.google.api.services.youtube.model.PlaylistItem;
+import com.google.api.services.youtube.model.PlaylistItemSnippet;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Key;
@@ -67,6 +69,16 @@ public class Video {
         return new Gson().fromJson(
         ((Text) videoEntity.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON)).getValue(),
          Video.class);
+    }
+
+    public static Video videoFromPlaylistItem(PlaylistItem playlistItem) throws MalformedURLException {
+        PlaylistItemSnippet snippet = playlistItem.getSnippet();
+        String videoId = playlistItem.getId();
+        String videoTitle = snippet.getTitle();
+        String videoDescription = snippet.getDescription();
+        String thumbnailUrl = snippet.getThumbnails().getDefault().getUrl();
+        boolean isPublic = !playlistItem.getStatus().getPrivacyStatus().equals("private");
+        return new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
     }
 
     public String getVideoId() {
