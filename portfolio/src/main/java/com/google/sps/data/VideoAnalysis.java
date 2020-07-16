@@ -10,9 +10,9 @@ import java.time.Period;
 public class VideoAnalysis {
     private final float sentimentScore;
     private final float sentimentMagnitude;
-    private final String query;
+    private final String searchQueryString;
     private final LocalDate timestamp;
-    private static int QUERY_SIZE = 7;
+    private static int SEARCH_QUERY_SIZE = 7;
     
     //If given a video we will run analysis on it !!THIS IS SLOWER THAN JUST PASSING IN THE VALUES IF YOU HAVE THEM!!
     public VideoAnalysis(Video video) throws IOException {
@@ -20,7 +20,7 @@ public class VideoAnalysis {
         SearchQuery searchQuery = new SearchQuery(video, SEARCH_QUERY_SIZE);
         this.sentimentScore = sentimentAnalysis.getScore();
         this.sentimentMagnitude = sentimentAnalysis.getMagnitude();
-        this.query = queryAnalysis.toString();
+        this.searchQueryString = searchQuery.toString();
         this.timestamp = LocalDate.now();
     }
 
@@ -29,6 +29,7 @@ public class VideoAnalysis {
         this.sentimentScore = _sentimentScore;
         this.sentimentMagnitude = _sentimentMagnitude;
         this.searchQueryString = _searchQueryString;
+        this.timestamp = LocalDate.now();
     }
 
     public float getSentimentScore(){
@@ -54,6 +55,6 @@ public class VideoAnalysis {
     public boolean isExpiredAnalysis(){
         LocalDate now = LocalDate.now();
         Period diff = Period.between(this.timestamp, now);
-        return diff.days() >= 7);
+        return (diff.getDays() >= 7);
     }
 }
