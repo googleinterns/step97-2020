@@ -9,13 +9,21 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class DataServletTests {
+/*TEST CLASSES AND THERE FILES HAVE TO FOLLOW ANY OF THE FOLLOWING NAMING CONVENTIONS DUE TO MAVEN
+[rest of name]Test.java -> BlahBlahBlahTest.java
+Test[rest of name].java -> TestBlahBlahBlah.java
+*/
 
-  // Maximum eventual consistency.
+public class DatastoreTest {
+
+  // Maximum eventual consistency. [https://en.wikipedia.org/wiki/Eventual_consistency] TL;DR, some writes will commit but will always fail to apply, meaning we can't see them with global queries, strong consistency queries like ancestor queries will work
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
           .setDefaultHighRepJobPolicyUnappliedJobPercentage(100));
@@ -35,7 +43,11 @@ public class DataServletTests {
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         Entity dummy = new Entity("Dummy");
         ds.put(dummy);
-        assertEquals(1, ds.prepare(new Query("Dummy")).countEntities(withLimit(10)));
+        try {
+            assertEquals(true, ds.get(dummy.getKey()) != null);
+        } catch(EntityNotFoundException e) {
+            Assert.fail("Entity not found in Database");
+        }
   }
 
     @Test
@@ -50,16 +62,16 @@ public class DataServletTests {
         Entity queriedDummyParent; 
         try {
             queriedDummyParent = ds.get(queriedDummyParentKey);
+            assertEquals(true, queriedDummyParent == dummyParent);
         } catch(EntityNotFoundException e){
-            fail("Entity not found in Database")
+            Assert.fail("Entity not found in Database");
         }
-        assertEquals(true, queriedDummyParent == dummyParent);
     }
     
     @Test
     public void EntityPropertiesArePutInDatastore(){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        dummyString = "Bananas";
+        String dummyString = "Bananas";
         Entity dummy = new Entity("Dummy");
         dummy.setProperty("Fruit", dummyString);
         ds.put(dummy);
@@ -67,9 +79,9 @@ public class DataServletTests {
         Entity queriedDummy;
         try {
             queriedDummy = ds.get(dummyKey);
+            assertEquals(true, queriedDummy.getProperty("Fruit").toString().equals(dummyString));
         } catch(EntityNotFoundException e){
-            fail("Entity not found in Database")
+            Assert.fail("Entity not found in Database");
         }
-        assertEquals(true, queriedDummy.getProperty("Fruit").toString().equals(dummyString));
     }
 }
