@@ -31,54 +31,61 @@ public class AnalysisServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
-        // If video key is malformed, send error status code.
-        String keyString = request.getParameter(PropertyNames.VIDEO_KEY);
-        if (keyString == null || keyString.isEmpty()) {
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video key cannot be empty.");
+        // If video id is malformed, send error status code.
+        String videoId = request.getParameter(PropertyNames.VIDEO_ID);
+        if (videoId == null || videoId.isEmpty()) {
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video id cannot be empty.");
             return;
         }
         // Check if video is in database and retrieve it if it is.
-        Key videoKey = KeyFactory.stringToKey(keyString);
+        Key videoKey = KeyFactory.createKey("Video", videoId);
         Entity videoEntity;
         Entity videoAnalysisEntity;
         try {
             videoEntity = datastore.get(videoKey);
-            videoAnalysisEntity = datastore.get(videoEntity.getParent());
+            // Try to retrieve the Analysis child with id 0.
+            Key analysisKey = KeyFactory.createKey(videoKey, "Analysis", 1L);
+            videoAnalysisEntity = datastore.get(analysisKey);
         } catch(EntityNotFoundException e) {
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video analysis not found in database.");
             return;
         }
-        Video video = Video.videoFromDatastoreEntity(videoEntity);
-        video.loadCaptions();
-        // Create the video analysis.
-        VideoAnalysis analysis;
-        try {
-            analysis = new VideoAnalysis(video);
+        // If there is currently no analysis, generate a new one.
+        if (videoAnalysisEntity.getProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON) == null) {
+            Video video = Video.videoFromDatastoreEntity(videoEntity);
+            video.loadCaptions();
+            // Create the video analysis.
+            VideoAnalysis analysis;
+            try {
+                analysis = new VideoAnalysis(video);
 
-        } catch (IOException e) {
-            sendErrorMessage(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Video analysis failed.");
-            return;
+            } catch (IOException e) {
+                sendErrorMessage(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Video analysis failed.");
+                return;
+            }
+            // Store video analysis Json as property (for now).
+            Gson gson = new Gson();
+            videoAnalysisEntity.setProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON, gson.toJson(analysis));
+            datastore.put(videoAnalysisEntity);
         }
-        // Store video analysis Json as property (for now).
-        Gson gson = new Gson();
-        videoAnalysisEntity.setProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON, gson.toJson(analysis));
-        datastore.put(videoAnalysisEntity);
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         // Check if datastore key for video is valid.
-        String keyString = request.getParameter(PropertyNames.VIDEO_KEY);
-        if (keyString == null || keyString.isEmpty()) {
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video key cannot be empty.");
+        String videoId = request.getParameter(PropertyNames.VIDEO_ID);
+        if (videoId == null || videoId.isEmpty()) {
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video id cannot be empty.");
             return;
         }
-        Key videoKey = KeyFactory.stringToKey(keyString);
+        Key videoKey = KeyFactory.createKey("Video", videoId);
         // Get video analysis if it exists.
         Entity videoEntity;
         Entity videoAnalysisEntity;
         try {
-            videoAnalysisEntity = datastore.get(videoKey.getParent());
+            // Create custom key for child with id 0.
+            Key analysisKey = KeyFactory.createKey(videoKey, "Analysis", 1L);
+            videoAnalysisEntity = datastore.get(analysisKey);
         } catch (EntityNotFoundException e) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
             return;

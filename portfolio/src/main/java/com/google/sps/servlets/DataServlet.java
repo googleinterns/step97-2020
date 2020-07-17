@@ -30,12 +30,13 @@ public class DataServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         //Check if we get a valid video ID as a parameter 
-        String videoKeyAsString = request.getParameter(PropertyNames.VIDEO_KEY);
-        if(videoKeyAsString == null || videoKeyAsString.isEmpty()){
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video key cannot be empty.");
+        String videoId = request.getParameter(PropertyNames.VIDEO_ID);
+        if(videoId == null || videoId.isEmpty()){
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video id cannot be empty.");
             return;
         }
-        Key videoKey = KeyFactory.stringToKey(videoKeyAsString); 
+        //Create custom key using video id.
+        Key videoKey = KeyFactory.createKey("Video", videoId); 
         //grab our video using the key
         Entity video;
         try {
@@ -59,20 +60,20 @@ public class DataServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         //Run a query to see if we get any results from the video ID of the POST request
-        String id = request.getParameter(PropertyNames.VIDEO_ID);
-        if (id == null || id.isEmpty()) {
+        String videoId = request.getParameter(PropertyNames.VIDEO_ID);
+        if (videoId == null || videoId.isEmpty()) {
             sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video ID cannot be empty.");
             return;
         }
         Query query = new Query("Video")
-            .setFilter(new FilterPredicate(PropertyNames.VIDEO_ID, FilterOperator.EQUAL, id));
+            .setFilter(new FilterPredicate(PropertyNames.VIDEO_ID, FilterOperator.EQUAL, videoId));
         PreparedQuery preparedQuery = datastore.prepare(query);
         Entity queryVideoEntity = preparedQuery.asSingleEntity();
         //if the video Id doesnt exist in our database, we convert the request to a video entity, add it to the database, and redirect. 
         if(queryVideoEntity == null){
             Video video;
             try {
-                video = AUX.VideoIdToObject(id);
+                video = AUX.VideoIdToObject(videoId);
             } catch (IOException e) {
                 sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Unable to retrieve video.");
                 return;
@@ -84,32 +85,11 @@ public class DataServlet extends HttpServlet {
                 return;
 
             }
-            Entity emptyAnalysisEntity = new Entity("Analysis");
-            datastore.put(emptyAnalysisEntity);
-            Entity videoEntity = Video.videoToDatastoreEntity(video, emptyAnalysisEntity.getKey());
+            Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
-            //Get the Datastore key of the the entity we just created as a string 
-            String videoEntityKey = KeyFactory.keyToString(videoEntity.getKey());
-            //Send key back to the client.
-            response.setContentType("text/plain");
-            try {
-                response.getWriter().println(videoEntityKey);
-            } catch (IOException e) {
-                if (DEBUG) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            //Get entity key and send back to the client.
-            String queryVideoEntityKey = KeyFactory.keyToString(queryVideoEntity.getKey());
-            response.setContentType("text/plain");
-            try {
-                response.getWriter().println(queryVideoEntityKey);
-            } catch (IOException e) {
-                if (DEBUG) {
-                    e.printStackTrace();
-                }
-            }
+            // Create a new analysis entry using custom keys.
+            Entity videoAnalysis = new Entity("Analysis", 1L, videoEntity.getKey());
+            datastore.put(videoAnalysis);
         }
     }
 

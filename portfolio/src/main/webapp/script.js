@@ -24,8 +24,8 @@ title: "video-title",
 description: "video-description"
 }
 
-// Save video key for the current video the user has previewed.
-let videoKey = null;
+//The id for the video most recently viewed.
+let videoId = null;
 
 //Submit video data to the data servlet.
 async function submitVideoData() {
@@ -35,6 +35,7 @@ async function submitVideoData() {
     document.getElementById("search-flexbox").style.display="none";
 
     //Send post request with form data.
+    videoId = document.getElementById("videoId").value;
     const videoForm = document.getElementById("video-data-form");
     const queryString = new URLSearchParams(new FormData(videoForm)).toString();
     const request = new Request("/data?" + queryString, {method: "POST"});
@@ -45,15 +46,13 @@ async function submitVideoData() {
         alert(responseText);
         return;
     }
-    //Otherwise, the response text is the key and we fetch the video data.
-    videoKey = responseText;
-    await fetchVideoData(videoKey);
+    await fetchVideoData(videoId);
     document.getElementById("analyze-button").style.display = "inline-block";
 }
 
 //This function is a GET request to our database to populate our mainpage elemetns with video information
-async function fetchVideoData(key) {
-    const response = await fetch('/data?videoKey=' + key);
+async function fetchVideoData(videoId) {
+    const response = await fetch('/data?videoId=' + videoId);
     //Alert the user and exit if errors occurred.
     if (response.status >= 400) {
         alert(await response.text());
@@ -66,20 +65,20 @@ async function fetchVideoData(key) {
 }
 
 async function analyze() {
-    //Check if video key is properly initialized.
-    if (videoKey === null) {
+    //Check if video id is properly initialized.
+    if (videoId === null) {
         alert("No video selected.");
         return;
     }
     //Post the video for analysis.
-    let request = new Request("/analysis?videoKey=" + videoKey, {method: "POST"});
+    let request = new Request("/analysis?videoId=" + videoId, {method: "POST"});
     let response = await fetch(request);
     if (response.status >= 400) {
         alert(await response.text());
         return;
     }
     //Get the results of the analysis.
-    request = new Request("/analysis?videoKey=" + videoKey, {method: "GET"});
+    request = new Request("/analysis?videoId=" + videoId, {method: "GET"});
     response = await fetch(request);
     if (response.status >= 400) {
         alert(await response.text());

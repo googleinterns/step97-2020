@@ -38,8 +38,10 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.gson.Gson;
 
 import com.google.sps.data.PropertyNames;
 import com.google.sps.data.Video;
@@ -73,31 +75,35 @@ public class PlaylistServlet extends HttpServlet{
                 "snippet/description," +
                 "snippet/thumbnails/default/url," +
                 "snippet/resourceId/videoId," +
-                "status/privacyStatus)");
-        PlaylistItemListResponse playlistResponse = playlistRequest
+                "status/privacyStatus)," +
+                "nextPageToken");
+        List<Video> playlistVideos = new ArrayList<>();
+        PlaylistItemListResponse playlistResponse;
+        // Loop through all pages of results until there are none left.
+        do {
+            playlistResponse = playlistRequest
             .setKey(apiKey)
             .setPlaylistId(playlistId)
-            .setMaxResults(100L)
+            .setMaxResults(50L)
             .execute();
-        List<Video> playlistVideos;
-        try {
-            playlistVideos = playlistResponse.getItems().stream()
-            .map(item -> {
-                try {
-                    return Video.videoFromPlaylistItem(item);
-                } catch (MalformedURLException e) {
-                    throw new UncheckedIOException(e);
-                }
-            })
-            .collect(Collectors.toList());
-        } catch (UncheckedIOException e) {
-            sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Unable to retrieve video thumbnail.");
-            return;
-        }
-        List<String> playlistKeys = new ArrayList<>();
+            for (PlaylistItem item : playlistResponse.getItems()) {
+                playlistVideos.add(Video.videoFromPlaylistItem(item));
+            }
+            if (playlistResponse.getNextPageToken() != null) {
+                playlistRequest = playlistRequest.setPageToken(playlistResponse.getNextPageToken());
+            }
+        } while (playlistResponse.getNextPageToken() != null);
+        // Add all videos and dummy analyses to datastore.
         for (Video video: playlistVideos) {
-            datastore.put(Video.videoToDatastoreEntity(video));
+            Entity videoEntity = Video.videoToDatastoreEntity(video);
+            datastore.put(videoEntity);
+            // Create an analysis entity that is a child of the video entity with id 1.
+            Entity analysisEntity = new Entity("Analysis", 1L, videoEntity.getKey());
+            datastore.put(analysisEntity);
+            // Remove description so less data is sent in response.
+            video.setDescription(null);
         }
+        response.getWriter().println(new Gson().toJson(playlistVideos));
     }
     // Send an error message to the client.
     public static void sendErrorMessage(HttpServletResponse response, int status, String message) {
