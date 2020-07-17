@@ -38,6 +38,7 @@ public class DatastoreTest {
         helper.tearDown();
     }
 
+    //Test to make sure that entities are properly posted into datastore (Checked with entities key)
     @Test
     public void EntitiesArePutInDatastore(){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -49,7 +50,7 @@ public class DatastoreTest {
             Assert.fail("Entity not found in Database");
         }
   }
-
+    //Test to make sure that we can query for entities using the key from .getParent()
     @Test
     public void EntitiesCanHaveParentsUsingKeys(){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -62,12 +63,12 @@ public class DatastoreTest {
         Entity queriedDummyParent; 
         try {
             queriedDummyParent = ds.get(queriedDummyParentKey);
-            assertEquals(true, queriedDummyParent == dummyParent);
+            assertEquals(true, queriedDummyParent != null);
         } catch(EntityNotFoundException e){
             Assert.fail("Entity not found in Database");
         }
     }
-    
+    //Make sure we can grab properties from datastore using .getProperty()
     @Test
     public void EntityPropertiesArePutInDatastore(){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
