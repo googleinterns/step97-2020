@@ -20,10 +20,10 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import com.google.sps.data.VideoException;
 
 public class AUX{
     private static String DEVELOPER_KEY;
-
     private static final String APPLICATION_NAME = "Watch Wisely";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
@@ -42,9 +42,23 @@ public class AUX{
         // Define and execute the API request
         YouTube.Videos.List videoRequest = youtubeService.videos()
             .list("snippet");
-        VideoListResponse videoResponse = videoRequest.setKey(DEVELOPER_KEY)
+
+        VideoListResponse videoResponse = new VideoListResponse();
+        try{
+            videoResponse = videoRequest.setKey(DEVELOPER_KEY)
             .setId(videoId)
             .execute();
+        }
+        catch(Exception e){
+            //Print errors to console
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            //System.out.println("Error handling in aux.java: " + sw.toString());
+            Video tempVideo =  new Video(new VideoException(sw.toString()));
+            tempVideo.setTitle("Error!");
+            return tempVideo;
+        }
         
         com.google.api.services.youtube.model.Video video = videoResponse.getItems().get(0);
         String videoTitle = video.getSnippet().getTitle();
@@ -62,9 +76,20 @@ public class AUX{
         YouTube.Search.List searchRequest = youtubeService.search()
             .list("snippet")
             .setType("video");
-        SearchListResponse searchResponse = searchRequest.setQ(query)
-            .setKey(DEVELOPER_KEY)
-            .execute();
+
+        SearchListResponse searchResponse = new SearchListResponse();
+        try{
+            searchResponse = searchRequest.setQ(query)
+                .setKey(DEVELOPER_KEY)
+                .execute();
+        }
+        catch(Exception e){
+            //Print errors to console
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            System.out.println(sw.toString());
+        }
         
         ArrayList<String> videoIdList = new ArrayList<String>();
         for(int i = 0; i < searchResponse.getItems().size(); i++){
