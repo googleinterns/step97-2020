@@ -16,19 +16,18 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.sps.data.Video;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import com.google.sps.data.VideoException;
 
 public class AUX{
-    private static String DEVELOPER_KEY;
+    private static String DEVELOPER_KEY = null;
     private static final String APPLICATION_NAME = "Watch Wisely";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
     private static void GetDevKey(){
-        if(DEVELOPER_KEY == ""){
+        if(DEVELOPER_KEY == null){
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
             DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
                 .asSingleEntity()
@@ -64,8 +63,8 @@ public class AUX{
         String videoTitle = video.getSnippet().getTitle();
         String videoDescription = video.getSnippet().getLocalized().getDescription();
         String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
-
-        Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, true);
+        boolean isPublic = true;
+        Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
         return result;
     }
 
@@ -95,7 +94,6 @@ public class AUX{
         for(int i = 0; i < searchResponse.getItems().size(); i++){
             videoIdList.add(searchResponse.getItems().get(i).getId().getVideoId());
         }
-
         return videoIdList;
     }
 
