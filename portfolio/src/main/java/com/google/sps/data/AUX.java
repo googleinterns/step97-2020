@@ -17,6 +17,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.sps.data.Video;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import com.google.sps.data.VideoException;
@@ -35,37 +36,57 @@ public class AUX{
         }
     }
 
-    public static Video VideoIdToObject(String videoId) throws IOException, GeneralSecurityException{
+    public static Video VideoIdToObject(String videoId){
         GetDevKey();
-        YouTube youtubeService = getService();
-        // Define and execute the API request
-        YouTube.Videos.List videoRequest = youtubeService.videos()
-            .list("snippet");
 
         VideoListResponse videoResponse = new VideoListResponse();
         try{
+            //Get youtube service
+            YouTube youtubeService = getService();
+
+            // Define and execute the API request
+            YouTube.Videos.List videoRequest = youtubeService.videos()
+            .list("snippet");
+
             videoResponse = videoRequest.setKey(DEVELOPER_KEY)
             .setId(videoId)
             .execute();
+
+            com.google.api.services.youtube.model.Video video = videoResponse.getItems().get(0);
+            String videoTitle = video.getSnippet().getTitle();
+            String videoDescription = video.getSnippet().getLocalized().getDescription();
+            String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
+            boolean isPublic = true;
+            Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
+            return result;
+        }
+        catch (IOException e) {
+            Video tempVideo =  new Video(new VideoException("Unable to retrieve video"));
+            tempVideo.setTitle("Error!");
+            return tempVideo;
+        } 
+        catch (IndexOutOfBoundsException e) {
+            Video tempVideo =  new Video(new VideoException("No such video found."));
+            tempVideo.setTitle("Error!");
+            return tempVideo;
+        } 
+        catch (GeneralSecurityException e) {
+            Video tempVideo =  new Video(new VideoException("A security exception occurred"));
+            tempVideo.setTitle("Error!");
+            return tempVideo;
         }
         catch(Exception e){
-            //Print errors to console
+            //Catch any other error that has been potentially overlooked
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
-            //System.out.println("Error handling in aux.java: " + sw.toString());
+
             Video tempVideo =  new Video(new VideoException(sw.toString()));
             tempVideo.setTitle("Error!");
             return tempVideo;
         }
         
-        com.google.api.services.youtube.model.Video video = videoResponse.getItems().get(0);
-        String videoTitle = video.getSnippet().getTitle();
-        String videoDescription = video.getSnippet().getLocalized().getDescription();
-        String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
-        boolean isPublic = true;
-        Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
-        return result;
+        
     }
 
     public static ArrayList<String> SearchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{

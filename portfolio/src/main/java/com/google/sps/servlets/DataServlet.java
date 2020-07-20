@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Text;
 import com.google.sps.data.AUX;
+import com.google.sps.data.VideoException;
 import com.google.sps.data.PropertyNames;
 import com.google.sps.data.Video;
 import java.io.IOException;
@@ -71,18 +72,13 @@ public class DataServlet extends HttpServlet {
         //if the video Id doesnt exist in our database, we convert the request to a video entity, add it to the database, and redirect. 
         if(queryVideoEntity == null){
             Video video;
-            try {
-                video = AUX.VideoIdToObject(id);
-            } catch (IOException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Unable to retrieve video.");
+            video = AUX.VideoIdToObject(id);
+            try{
+                video.getException();
+            }
+            catch(VideoException e){
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, e.toString());
                 return;
-            } catch (IndexOutOfBoundsException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "No such video found.");
-                return;
-            } catch (GeneralSecurityException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "A security exception occurred.");
-                return;
-
             }
             Entity emptyAnalysisEntity = new Entity("Analysis");
             datastore.put(emptyAnalysisEntity);

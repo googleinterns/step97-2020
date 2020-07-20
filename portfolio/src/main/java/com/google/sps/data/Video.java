@@ -20,7 +20,7 @@ public class Video {
     private boolean isPublic;
     // Fetch when analyzing.
     private String captions;
-    private VideoException error;
+    private VideoException error = null;
     
     public Video(String videoId, String title, String description, String thumbnailUrl, boolean isPublic) 
       throws MalformedURLException{
@@ -111,6 +111,7 @@ public class Video {
     }
 
     public void getException() throws VideoException{
-        throw error;
+        if(error != null)
+            throw error;
     }
 }
