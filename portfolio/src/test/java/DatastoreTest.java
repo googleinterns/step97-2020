@@ -38,6 +38,13 @@ public class DatastoreTest {
         helper.tearDown();
     }
 
+    //make sure datastore service starts
+    @Test
+    public void DatastoreServiceStarts(){
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        assertEquals(true, ds != null);
+    }
+
     //Test to make sure that entities are properly posted into datastore (Checked with entities key)
     @Test
     public void EntitiesArePutInDatastore(){
