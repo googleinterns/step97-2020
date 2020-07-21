@@ -69,7 +69,7 @@ public class DataServlet extends HttpServlet {
             .setFilter(new FilterPredicate(PropertyNames.VIDEO_ID, FilterOperator.EQUAL, videoId));
         PreparedQuery preparedQuery = datastore.prepare(query);
         Entity queryVideoEntity = preparedQuery.asSingleEntity();
-        //if the video Id doesnt exist in our database, we convert the request to a video entity, add it to the database, and redirect. 
+        // If video id doesn't exist in database, convert to video entity and add to database.
         if(queryVideoEntity == null){
             Video video;
             try {
@@ -88,7 +88,9 @@ public class DataServlet extends HttpServlet {
             Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
             // Create a new analysis entry using custom keys.
-            Entity videoAnalysis = new Entity("Analysis", 1L, videoEntity.getKey());
+            Entity videoAnalysis = new Entity(/* Entity type=*/ "Analysis",
+                /* Child id =*/ 1L,
+                /* Key of parent =*/videoEntity.getKey());
             datastore.put(videoAnalysis);
         }
     }

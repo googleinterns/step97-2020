@@ -67,25 +67,27 @@ public class PlaylistServlet extends HttpServlet{
             .asSingleEntity()
             .getProperty("Key");
 
-        YouTube.PlaylistItems.List playlistRequest = youtubeService
-            .playlistItems()
-            .list("snippet,status")
-            .setFields("items("+
-                "snippet/title," +
-                "snippet/description," +
-                "snippet/thumbnails/default/url," +
-                "snippet/resourceId/videoId," +
-                "status/privacyStatus)," +
-                "nextPageToken");
+        YouTube.PlaylistItems.List playlistRequest =
+            youtubeService
+                .playlistItems()
+                .list("snippet,status")
+                .setFields("items("+
+                    "snippet/title," +
+                    "snippet/description," +
+                    "snippet/thumbnails/default/url," +
+                    "snippet/resourceId/videoId," +
+                    "status/privacyStatus)," +
+                    "nextPageToken");
         List<Video> playlistVideos = new ArrayList<>();
         PlaylistItemListResponse playlistResponse;
         // Loop through all pages of results until there are none left.
         do {
-            playlistResponse = playlistRequest
-            .setKey(apiKey)
-            .setPlaylistId(playlistId)
-            .setMaxResults(50L)
-            .execute();
+            playlistResponse = 
+                playlistRequest
+                    .setKey(apiKey)
+                    .setPlaylistId(playlistId)
+                    .setMaxResults(50L)
+                    .execute();
             for (PlaylistItem item : playlistResponse.getItems()) {
                 playlistVideos.add(Video.videoFromPlaylistItem(item));
             }
@@ -98,7 +100,9 @@ public class PlaylistServlet extends HttpServlet{
             Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
             // Create an analysis entity that is a child of the video entity with id 1.
-            Entity analysisEntity = new Entity("Analysis", 1L, videoEntity.getKey());
+            Entity analysisEntity = new Entity(/*Entity name=*/ "Analysis",
+                /*Child id=*/ 1L,
+                /*Parent key=*/ videoEntity.getKey());
             datastore.put(analysisEntity);
             // Remove description so less data is sent in response.
             video.setDescription(null);
