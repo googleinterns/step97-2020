@@ -54,7 +54,7 @@ public class AnalysisServlet extends HttpServlet {
         if (videoAnalysisEntity.getProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON) == null) {
             Video video = Video.videoFromDatastoreEntity(videoEntity);
             video.loadCaptions();
-            // Create the video analysis.
+            // Create the video analysis, may throw an IOException.
             VideoAnalysis analysis;
             try {
                 analysis = new VideoAnalysis(video);
