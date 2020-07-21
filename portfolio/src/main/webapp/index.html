@@ -22,6 +22,20 @@
         </div>
         <!-- Analyze button is hidden until a video is loaded. -->
         <button id="analyze-button" onclick="analyze()" style="display:none">Analyze</button>
+        <p>Playlists</p>
+        <form id="playlist-form">
+            <label for="playlistId">Id</label>
+            <input type="text" id="playlistId" name="playlistId">
+        </form>
+        <button id="load-playlist-button" onclick="loadPlaylist()">Load Playlist</button>
+        <!-- Display the first few video titles of the playlist in this container. -->
+        <ol id="titles-container"></ol>
+        <button id="analyze-playlist-button" onclick="analyzePlaylist()" style="display:none">Analyze Playlist</button>
+        <!-- User can click these buttons to go through the playlist analyses. -->
+        <div id="playlist-controls" style="display:none">
+            <button id="previous-video-button" onclick="prevVideo()">&lt;</button>
+            <button id="next-video-button" onclick="nextVideo()">&gt;</button>
+        </div>
         <!-- Analysis container appears only after an analysis is returned. -->
         <div id=analysis-container style="display:none">
             <!-- Container for sentiment results -->
@@ -33,6 +47,6 @@
                 <script async src="https://cse.google.com/cse.js?cx=008676578218256611896:ajzj9iccpze"></script>
                 <div class="gcse-search" data-gname="analysis-search"></div>
             </div>
-        <div>
+        </div>
     </body>
 </html>

@@ -60,7 +60,7 @@ public class PlaylistServlet extends HttpServlet{
         })
         .setApplicationName("playlist-items").build();
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         String playlistId = request.getParameter(PropertyNames.PLAYLIST_ID);
         String apiKey = (String) datastore.prepare(new Query("YoutubeAPIKey"))
