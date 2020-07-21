@@ -1,5 +1,7 @@
 package com.google.sps.data;
 import com.google.sps.data.PropertyNames;
+import com.google.api.services.youtube.model.PlaylistItem;
+import com.google.api.services.youtube.model.PlaylistItemSnippet;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Key;
@@ -50,15 +52,10 @@ public class Video {
     }
 
     public static Entity videoToDatastoreEntity(Video video){
-        Entity videoEntity = new Entity("Video");
+        // Pass in video id as argument to make a custom key.
+        Entity videoEntity = new Entity("Video", video.getVideoId());
         videoEntity.setProperty(PropertyNames.VIDEO_ID, video.getVideoId());
         // Use datastore Text object since Strings can exceed maximum property length.
-        videoEntity.setProperty(PropertyNames.VIDEO_OBJECT_AS_JSON, new Text(new Gson().toJson(video)));
-        return videoEntity;
-    }
-    public static Entity videoToDatastoreEntity(Video video, Key key){
-        Entity videoEntity = new Entity("Video", key);
-        videoEntity.setProperty(PropertyNames.VIDEO_ID, video.getVideoId());
         videoEntity.setProperty(PropertyNames.VIDEO_OBJECT_AS_JSON, new Text(new Gson().toJson(video)));
         return videoEntity;
     }
@@ -67,6 +64,16 @@ public class Video {
         return new Gson().fromJson(
         ((Text) videoEntity.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON)).getValue(),
          Video.class);
+    }
+
+    public static Video videoFromPlaylistItem(PlaylistItem playlistItem) throws MalformedURLException {
+        PlaylistItemSnippet snippet = playlistItem.getSnippet();
+        String videoId = snippet.getResourceId().getVideoId();
+        String videoTitle = snippet.getTitle();
+        String videoDescription = snippet.getDescription();
+        String thumbnailUrl = snippet.getThumbnails().getDefault().getUrl();
+        boolean isPublic = !playlistItem.getStatus().getPrivacyStatus().equals("private");
+        return new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
     }
 
     public String getVideoId() {
