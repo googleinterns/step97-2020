@@ -96,8 +96,7 @@ async function analyze() {
 
     //Update and show the analysis with the response fields.
     response = await response.json();
-    document.getElementById("happy-meter").value = response.sentimentScore;
-    google.search.cse.element.getElement("analysis-search").execute(response.searchQueryString);
+    updateAnalysis(response);
     document.getElementById("analysis-container").style.display = "block";
     document.getElementById("happy-meter").style.display="inline";
     document.getElementById("search-flexbox").style.display="flex";
@@ -156,8 +155,7 @@ async function analyzePlaylist() {
 
     // Update page elements with analysis results.
     const curAnalysis = playlistAnalyses[analysisIndex];
-    document.getElementById("happy-meter").value = curAnalysis.sentimentScore;
-    google.search.cse.element.getElement("analysis-search").execute(curAnalysis.searchQueryString);
+    updateAnalysis(curAnalysis);
 
     // Display the analysis results.
     document.getElementById("analysis-container").style.display = "block";
@@ -178,8 +176,7 @@ function nextVideo() {
     }
     // Increment the analysis index and update the analysis page elements.
     const curAnalysis = playlistAnalyses[++analysisIndex];
-    document.getElementById("happy-meter").value = curAnalysis.sentimentScore;
-    google.search.cse.element.getElement("analysis-search").execute(curAnalysis.searchQueryString);
+    updateAnalysis(curAnalysis);
 }
 
 function prevVideo() {
@@ -194,6 +191,12 @@ function prevVideo() {
     }
     // Decrement the analysis index and update analysis page elements.
     const curAnalysis = playlistAnalyses[--analysisIndex];
+    updateAnalysis(curAnalysis);
+}
+
+// Update the analysis container with a new video analysis.
+function updateAnalysis(curAnalysis) {
+    document.getElementById("analysis-title").textContent = curAnalysis.videoTitle;
     document.getElementById("happy-meter").value = curAnalysis.sentimentScore;
     google.search.cse.element.getElement("analysis-search").execute(curAnalysis.searchQueryString);
 }
