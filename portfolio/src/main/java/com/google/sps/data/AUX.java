@@ -15,17 +15,25 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.sps.data.Video;
+import com.google.sps.data.VideoException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.GeneralSecurityException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-import com.google.sps.data.VideoException;
 
 public class AUX{
     private static String DEVELOPER_KEY = null;
     private static final String APPLICATION_NAME = "Watch Wisely";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    private static final String GET_URL_BASE_URL = "http://video.google.com/timedtext?lang=en&v=";
+	private static String GET_URL;
 
     private static void GetDevKey(){
         if(DEVELOPER_KEY == null){
@@ -56,8 +64,9 @@ public class AUX{
             String videoTitle = video.getSnippet().getTitle();
             String videoDescription = video.getSnippet().getLocalized().getDescription();
             String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
+            String videoCaptions = getVideoCaptions(videoId);
             boolean isPublic = true;
-            Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
+            Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, videoCaptions, isPublic);
             return result;
         }
         catch (IOException e) {
@@ -129,5 +138,39 @@ public class AUX{
         return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
             .setApplicationName(APPLICATION_NAME)
             .build();
+    }
+
+    public static String getVideoCaptions(String videoId){
+        try{
+            GET_URL = GET_URL_BASE_URL + videoId;
+            URL obj = new URL(GET_URL);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            int responseCode = con.getResponseCode();
+
+            //If the get request worked, read it into a string. It should come as an xml file
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                StringBuffer stringResponse = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    stringResponse.append(inputLine);
+                }
+                in.close();
+
+                // print result
+                return stringResponse.toString();
+            } 
+            
+            else {
+                //Get request failed.
+                return "";
+            }
+        }
+        catch(Exception e){
+            return "";
+        }
+
     }
 }

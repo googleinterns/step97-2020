@@ -33,6 +33,16 @@ public class Video {
         this.captions = null;
     }
 
+    public Video(String videoId, String title, String description, String thumbnailUrl, String captions, boolean isPublic) 
+      throws MalformedURLException{
+        this.videoId = videoId;
+        this.title = title;
+        this.description = description;
+        this.thumbnailUrl = new URL(thumbnailUrl);
+        this.isPublic = isPublic;
+        this.captions = captions;
+    }
+
     // Create video from videoId.
     public Video(String videoId) throws MalformedURLException{
         // For Olabode to fill in.
