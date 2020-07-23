@@ -16,14 +16,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/*TEST CLASSES AND THERE FILES HAVE TO FOLLOW ANY OF THE FOLLOWING NAMING CONVENTIONS DUE TO MAVEN
-[rest of name]Test.java -> BlahBlahBlahTest.java
-Test[rest of name].java -> TestBlahBlahBlah.java
+/**
+
+* TEST CLASSES AND THERE FILES HAVE TO FOLLOW ANY OF THE FOLLOWING NAMING CONVENTIONS DUE TO MAVEN
+* [rest of name]Test.java -> BlahBlahBlahTest.java
+* Test[rest of name].java -> TestBlahBlahBlah.java
 */
 
 public class DatastoreTest {
 
-  // Maximum eventual consistency. [https://en.wikipedia.org/wiki/Eventual_consistency] TL;DR, some writes will commit but will always fail to apply, meaning we can't see them with global queries, strong consistency queries like ancestor queries will work
+  /** 
+  * Maximum eventual consistency. [https://en.wikipedia.org/wiki/Eventual_consistency] 
+  * TL;DR, some writes will commit but will always fail to apply...
+  * this means we can't see them with global queries, strong consistency queries like ancestor queries will work
+  */
+  static final String TEST_DUMMY_NAME = "Dummy";
+  static final String TEST_DUMMY_PARENT_NAME = "DummyParent";
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
           .setDefaultHighRepJobPolicyUnappliedJobPercentage(100));
@@ -38,7 +46,7 @@ public class DatastoreTest {
         helper.tearDown();
     }
 
-    //make sure datastore service starts
+    //Test case to assure that we can start the Datastore service
     @Test
     public void DatastoreServiceStarts(){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -49,7 +57,7 @@ public class DatastoreTest {
     @Test
     public void EntitiesArePutInDatastore(){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Entity dummy = new Entity("Dummy");
+        Entity dummy = new Entity(TEST_DUMMY_NAME);
         ds.put(dummy);
         try {
             assertEquals(true, ds.get(dummy.getKey()) != null);
@@ -57,14 +65,14 @@ public class DatastoreTest {
             Assert.fail("Entity not found in Database");
         }
   }
-    //Test to make sure that we can query for entities using the key from .getParent()
+    //Test to make sure that we can query for entities using the key obtained from .getParent()
     @Test
     public void EntitiesCanHaveParentsUsingKeys(){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Entity dummyParent = new Entity("DummyParent");
+        Entity dummyParent = new Entity(TEST_DUMMY_PARENT_NAME);
         ds.put(dummyParent);
         Key dummyParentKey = dummyParent.getKey();
-        Entity dummy = new Entity("Dummy", dummyParentKey);
+        Entity dummy = new Entity(TEST_DUMMY_NAME, dummyParentKey);
         ds.put(dummy);
         Key queriedDummyParentKey = dummy.getParent();
         Entity queriedDummyParent; 
@@ -80,7 +88,7 @@ public class DatastoreTest {
     public void EntityPropertiesArePutInDatastore(){
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         String dummyString = "Bananas";
-        Entity dummy = new Entity("Dummy");
+        Entity dummy = new Entity(TEST_DUMMY_NAME);
         dummy.setProperty("Fruit", dummyString);
         ds.put(dummy);
         Key dummyKey = dummy.getKey();
