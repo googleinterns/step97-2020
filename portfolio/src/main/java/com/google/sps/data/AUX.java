@@ -34,6 +34,7 @@ public class AUX{
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String GET_URL_BASE_URL = "http://video.google.com/timedtext?lang=en&v=";
 	private static String GET_URL;
+    private static final boolean DEBUG = false;
 
     private static void GetDevKey(){
         /*if(DEVELOPER_KEY == null){
@@ -106,11 +107,13 @@ public class AUX{
                 .execute();
         }
         catch(Exception e){
-            //Print errors to console
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-            System.out.println(sw.toString());
+            if(DEBUG){
+                //Print errors to console
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                System.out.println(sw.toString());
+            }
         }
         
         ArrayList<String> videoIdList = new ArrayList<String>();
