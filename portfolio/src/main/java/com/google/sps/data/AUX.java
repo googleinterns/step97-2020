@@ -36,15 +36,16 @@ public class AUX{
 	private static String GET_URL;
 
     private static void GetDevKey(){
-        if(DEVELOPER_KEY == null){
+        /*if(DEVELOPER_KEY == null){
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
             DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
                 .asSingleEntity()
                 .getProperty("Key");
-        }
+        }*/
+        DEVELOPER_KEY = "AIzaSyBOUFTwKaYgeEpRNZvw9tt-T1QKufhbeoM";
     }
 
-    public static Video VideoIdToObject(String videoId){
+    public static Video VideoIdToObject(String videoId) throws VideoException{
         GetDevKey();
 
         VideoListResponse videoResponse = new VideoListResponse();
@@ -70,19 +71,13 @@ public class AUX{
             return result;
         }
         catch (IOException e) {
-            Video tempVideo =  new Video(new VideoException("Unable to retrieve video"));
-            tempVideo.setTitle("Error!");
-            return tempVideo;
+            throw new VideoException("Unable to retrieve video");
         } 
         catch (IndexOutOfBoundsException e) {
-            Video tempVideo =  new Video(new VideoException("No such video found."));
-            tempVideo.setTitle("Error!");
-            return tempVideo;
+            throw new VideoException("No such video found.");
         } 
         catch (GeneralSecurityException e) {
-            Video tempVideo =  new Video(new VideoException("A security exception occurred"));
-            tempVideo.setTitle("Error!");
-            return tempVideo;
+            throw new VideoException("A security exception occurred");
         }
         catch(Exception e){
             //Catch any other error that has been potentially overlooked
@@ -90,9 +85,7 @@ public class AUX{
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
 
-            Video tempVideo =  new Video(new VideoException(sw.toString()));
-            tempVideo.setTitle("Error!");
-            return tempVideo;
+            throw new VideoException(sw.toString());
         }
         
         

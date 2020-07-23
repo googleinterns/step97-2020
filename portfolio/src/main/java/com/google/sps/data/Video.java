@@ -20,7 +20,6 @@ public class Video {
     private boolean isPublic;
     // Fetch when analyzing.
     private String captions;
-    private VideoException error = null;
     
     public Video(String videoId, String title, String description, String thumbnailUrl, boolean isPublic) 
       throws MalformedURLException{
@@ -47,11 +46,6 @@ public class Video {
     public Video(String videoId) throws MalformedURLException{
         // For Olabode to fill in.
         this(null, null, null, null, true);
-    }
-
-    //Create vide from videoException
-    public Video(VideoException vidException){
-        error = vidException;
     }
 
     public static Video httpRequestToVideo(HttpServletRequest request) throws MalformedURLException{
@@ -118,10 +112,5 @@ public class Video {
 
     public String getCaptions() {
         return captions;
-    }
-
-    public void getException() throws VideoException{
-        if(error != null)
-            throw error;
     }
 }
