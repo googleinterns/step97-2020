@@ -16,3 +16,11 @@ h1 {
     flex-direction: row;
     justify-content: center;
 }
+
+#titles-container {
+    list-style-type: none;
+}
+
+#playlist-controls {
+    justify-content: center;
+}
