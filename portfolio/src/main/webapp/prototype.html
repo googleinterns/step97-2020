@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <title>Watch Wisely</title>
+        <link rel="stylesheet" href="prototype.css">
+    </head>
+    <body>
+        <section id="search-section">
+            <div id="search-container">
+                <div id="toggle-container">
+                    <button id="select-video">Video</button>
+                    <button id="select-playlist">Playlist</button>
+                </div>
+                <form id="search-form">
+                    <div class="form-group">
+                        <label for="id-field">ID</label>
+                        <input id="id-field" name="id" type="text">
+                    </div>
+                </form>
+            </div>
+        </section>
+        <section id="analysis-section">
+            <nav id="videos-pane">
+                <ul>
+                    <li>
+                        <p>Title</p>
+                        <img src="https://i.ytimg.com/vi/Ks-_Mh1QhMc/hqdefault.jpg">
+                    </li>
+                    <li>
+                        <p>Title</p>
+                        <img src="https://i.ytimg.com/vi/Ks-_Mh1QhMc/hqdefault.jpg">
+                    </li>
+                    <li>
+                        <p>Title</p>
+                        <img src="https://i.ytimg.com/vi/Ks-_Mh1QhMc/hqdefault.jpg">
+                    </li>
+                    <li>
+                        <p>Title</p>
+                        <img src="https://i.ytimg.com/vi/Ks-_Mh1QhMc/hqdefault.jpg">
+                    </li>
+                </ul>
+            </nav>
+            <div id="analysis-pane">
+                <div class="video-wrapper">
+                    <iframe
+                        frameborder="0"
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed/Ks-_Mh1QhMc"
+                        allow="accelerometer;
+                        autoplay; encrypted-media;
+                        gyroscope;
+                        picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </section>
+    </body>
+    <script src="script.js"></script>
+</html>
