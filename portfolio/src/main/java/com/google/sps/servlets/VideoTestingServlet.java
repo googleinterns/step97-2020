@@ -26,8 +26,9 @@ public class VideoTestingServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try{
-            Video testVideo = AUX.VideoIdToObject("asdfhkials");
-            response.getWriter().println("Test video Title: " + testVideo.getTitle());
+            //Video testVideo = AUX.videoIdToObject("asdfhkials");
+            String whereIsV = AUX.youtubeUrlToId("yesv=maybe&x");
+            response.getWriter().println(whereIsV);
         }
         catch(Exception e){
             //Print errors to console

@@ -35,6 +35,9 @@ public class AUX{
     private static final String GET_URL_BASE_URL = "http://video.google.com/timedtext?lang=en&v=";
 	private static String GET_URL;
 
+    /*
+    *
+    */
     private static void GetDevKey(){
         if(DEVELOPER_KEY == null){
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -44,7 +47,10 @@ public class AUX{
         }
     }
 
-    public static Video VideoIdToObject(String videoId){
+    /*
+    *
+    */
+    public static Video videoIdToObject(String videoId){
         GetDevKey();
 
         VideoListResponse videoResponse = new VideoListResponse();
@@ -65,8 +71,7 @@ public class AUX{
             String videoDescription = video.getSnippet().getLocalized().getDescription();
             String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
             String videoCaptions = getVideoCaptions(videoId);
-            boolean isPublic = true;
-            Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, videoCaptions, isPublic);
+            Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, videoCaptions, /*isPublic*/ true);
             return result;
         }
         catch (IOException e) {
@@ -98,7 +103,10 @@ public class AUX{
         
     }
 
-    public static ArrayList<String> SearchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
+    /*
+    *
+    */
+    public static ArrayList<String> searchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
         GetDevKey();
         YouTube youtubeService = getService();
         // Define and execute the API request
@@ -127,20 +135,60 @@ public class AUX{
         return videoIdList;
     }
 
-    /**
-     * Build and return an authorized API client service.
-     *
-     * @return an authorized API client service
-     * @throws GeneralSecurityException, IOException
-     */
-    private static YouTube getService() throws GeneralSecurityException, IOException {
+    /*
+    *Retrieve video id from youtube url
+    *@return a video id as string
+    */
+    public static String youtubeUrlToId(String youtubeUrl)throws IllegalArgumentException{
+        //There are 2 types of youtube links:
+        String type0 = "https://youtu.be/";
+        String type1 = "https://www.youtube.com/";
+        
+        int linkType;
+
+        if(youtubeUrl.length() < 17){
+            throw new IllegalArgumentException("Link provided is not a valid youtube link");    
+        }
+        if(youtubeUrl.substring(0, 17).compareTo(type0) == 0){
+            linkType = 0;
+        }
+        else if(youtubeUrl.substring(0, 24).compareTo(type1) == 0){
+            linkType = 1;
+        }
+        else{
+            throw new IllegalArgumentException("Link provided is not a valid youtube link");
+        }
+
+        if(linkType == 0){
+            String result = youtubeUrl.substring(17, youtubeUrl.length());
+            return result;
+        }
+        else if(linkType == 1){
+            int initIndex = youtubeUrl.indexOf("v=");
+            int finalIndex = youtubeUrl.indexOf("&");
+            if(finalIndex == -1){
+                String result = youtubeUrl.substring(initIndex+2, youtubeUrl.length());
+                return result;
+            }
+            else{
+                String result = youtubeUrl.substring(initIndex+2, finalIndex+1);
+                return result;
+            }
+        }
+        return "";
+    }
+
+    private static YouTube getService() throws IOException, GeneralSecurityException{
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
             .setApplicationName(APPLICATION_NAME)
             .build();
     }
 
-    public static String getVideoCaptions(String videoId){
+    /*
+    *
+    */
+    private static String getVideoCaptions(String videoId){
         try{
             GET_URL = GET_URL_BASE_URL + videoId;
             URL obj = new URL(GET_URL);
