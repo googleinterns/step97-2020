@@ -4,8 +4,6 @@
         <meta charset="UTF-8">
         <title>Watch Wisely</title>
         <link rel="stylesheet" href="style.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="script.js"></script>
     </head>
     <body>
         <p> Preview a video</p>
@@ -39,6 +37,7 @@
         <!-- Analysis container appears only after an analysis is returned. -->
         <div id=analysis-container style="display:none">
             <!-- Container for sentiment results -->
+            <h2 id="analysis-title"></h2>
             <div id="meter-container">
                 Sentiment: ☹<meter id="happy-meter" min="-1" max="1"></meter>😊
             </div>
@@ -49,4 +48,6 @@
             </div>
         </div>
     </body>
+    <script src="constants.js"></script>
+    <script src="script.js"></script>
 </html>

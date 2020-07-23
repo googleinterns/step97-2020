@@ -83,7 +83,6 @@ public class DataServlet extends HttpServlet {
             } catch (GeneralSecurityException e) {
                 sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "A security exception occurred.");
                 return;
-
             }
             Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
