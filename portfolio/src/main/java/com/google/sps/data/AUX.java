@@ -37,13 +37,12 @@ public class AUX{
     private static final boolean DEBUG = false;
 
     private static void GetDevKey(){
-        /*if(DEVELOPER_KEY == null){
+        if(DEVELOPER_KEY == null){
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
             DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
                 .asSingleEntity()
                 .getProperty("Key");
-        }*/
-        DEVELOPER_KEY = "AIzaSyBOUFTwKaYgeEpRNZvw9tt-T1QKufhbeoM";
+        }
     }
 
     public static Video VideoIdToObject(String videoId) throws VideoException{
