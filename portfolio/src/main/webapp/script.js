@@ -38,14 +38,14 @@ let analysisIndex = null;
 //Submit video data to the data servlet.
 async function submitVideoData() {
     //Hide the old analysis.
-    document.getElementById("analysis-container").style.display = "none";
-    document.getElementById("happy-meter").style.display="none";
-    document.getElementById("search-flexbox").style.display="none";
-    document.getElementById("playlist-controls").style.display="none";
+    document.getElementById(elements.analysisContainer).style.display = "none";
+    document.getElementById(elements.happyMeter).style.display="none";
+    document.getElementById(elements.searchFlexbox).style.display="none";
+    document.getElementById(elements.playlistControls).style.display="none";
 
     //Send post request with form data.
-    videoId = document.getElementById("videoId").value;
-    const videoForm = document.getElementById("video-data-form");
+    videoId = document.getElementById(elements.videoId).value;
+    const videoForm = document.getElementById(elements.videoDataForm);
     const queryString = new URLSearchParams(new FormData(videoForm)).toString();
     const request = new Request("/data?" + queryString, {method: "POST"});
     const response = await fetch(request);
@@ -56,7 +56,7 @@ async function submitVideoData() {
         return;
     }
     await fetchVideoData(videoId);
-    document.getElementById("analyze-button").style.display = "inline-block";
+    document.getElementById(elements.analyzeButton).style.display = "inline-block";
 }
 
 //This function is a GET request to our database to populate our mainpage elemetns with video information
@@ -97,21 +97,21 @@ async function analyze() {
     //Update and show the analysis with the response fields.
     response = await response.json();
     updateAnalysis(response);
-    document.getElementById("analysis-container").style.display = "block";
-    document.getElementById("happy-meter").style.display="inline";
-    document.getElementById("search-flexbox").style.display="flex";
+    document.getElementById(elements.analysisContainer).style.display = "block";
+    document.getElementById(elements.happyMeter).style.display="inline";
+    document.getElementById(elements.searchFlexbox).style.display="flex";
 }
 
 async function loadPlaylist() {
     // Hide the old analysis.
-    document.getElementById("titles-container").innerHTML = "";
-    document.getElementById("analysis-container").style.display = "none";
-    document.getElementById("happy-meter").style.display="none";
-    document.getElementById("search-flexbox").style.display="none";
-    document.getElementById("playlist-controls").style.display="none";
+    document.getElementById(elements.titlesContainer).innerHTML = "";
+    document.getElementById(elements.analysisContainer).style.display = "none";
+    document.getElementById(elements.happyMeter).style.display="none";
+    document.getElementById(elements.searchFlexbox).style.display="none";
+    document.getElementById(elements.playlistControls).style.display="none";
 
     // Make a post request to store playlist videos.
-    playlistId = document.getElementById("playlistId").value;
+    playlistId = document.getElementById(elements.playlistId).value;
     const responseJSON = await fetch("/playlist?playlistId=" + playlistId, {method: "POST"});
     const response = await responseJSON.json();
     // Check if any errors occurred.
@@ -121,7 +121,7 @@ async function loadPlaylist() {
     }
 
     // List titles of videos in the playlist.
-    const titleContainer = document.getElementById("titles-container");
+    const titleContainer = document.getElementById(elements.titlesContainer);
     let count = 0;
     for (var video of response) {
         titleContainer.innerHTML += "<li>" + video.title + "</li>";
@@ -134,7 +134,7 @@ async function loadPlaylist() {
     }
 
     // Show analysis button.
-    document.getElementById("analyze-playlist-button").style.display = "inline-block";
+    document.getElementById(elements.analyzePlaylistButton).style.display = "inline-block";
 
     // Update global playlist variables.
     playlist = response;
@@ -158,10 +158,10 @@ async function analyzePlaylist() {
     updateAnalysis(curAnalysis);
 
     // Display the analysis results.
-    document.getElementById("analysis-container").style.display = "block";
-    document.getElementById("happy-meter").style.display="inline";
-    document.getElementById("search-flexbox").style.display="flex";
-    document.getElementById("playlist-controls").style.display="flex";
+    document.getElementById(elements.analysisContainer).style.display = "block";
+    document.getElementById(elements.happyMeter).style.display="inline";
+    document.getElementById(elements.searchFlexbox).style.display="flex";
+    document.getElementById(elements.playlistControls).style.display="flex";
 }
 
 function nextVideo() {
@@ -196,7 +196,7 @@ function prevVideo() {
 
 // Update the analysis container with a new video analysis.
 function updateAnalysis(curAnalysis) {
-    document.getElementById("analysis-title").textContent = curAnalysis.videoTitle;
-    document.getElementById("happy-meter").value = curAnalysis.sentimentScore;
-    google.search.cse.element.getElement("analysis-search").execute(curAnalysis.searchQueryString);
+    document.getElementById(elements.analysisTitle).textContent = curAnalysis.videoTitle;
+    document.getElementById(elements.happyMeter).value = curAnalysis.sentimentScore;
+    google.search.cse.element.getElement(elements.analysisSearch).execute(curAnalysis.searchQueryString);
 }
