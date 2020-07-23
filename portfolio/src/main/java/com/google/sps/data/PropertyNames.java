@@ -8,6 +8,7 @@ public class PropertyNames {
     public static String CAPTION_ID = "captionId";
     public static String DESCRIPTION = "description";
     public static String IS_PUBLIC = "isPublic";
+    public static String PLAYLIST_ID = "playlistId";
     public static String THUMBNAIL_URL = "thumbnailUrl";
     public static String TITLE = "title";
     public static String VIDEO_ANALYSIS_JSON = "videoAnalysis";
