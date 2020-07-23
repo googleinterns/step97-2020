@@ -81,10 +81,12 @@ public class AUX{
             throw new VideoException("A security exception occurred");
         }
         catch(Exception e){
-            //Catch any other error that has been potentially overlooked
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
+            if(DEBUG){
+                //Catch any other error that has been potentially overlooked
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+            }
 
             throw new VideoException(sw.toString());
         }
