@@ -73,12 +73,11 @@ public class DataServlet extends HttpServlet {
         // If video id doesn't exist in database, convert to video entity and add to database.
         if(queryVideoEntity == null){
             Video video;
-            video = AUX.videoIdToObject(id);
             try{
-                video.getException();
+                video = AUX.VideoIdToObject(id);
             }
-            catch(VideoException e){
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, e.toString());
+            catch (VideoException e){
+                sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, e.toString());
                 return;
             }
             Entity videoEntity = Video.videoToDatastoreEntity(video);

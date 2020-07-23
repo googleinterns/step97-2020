@@ -34,9 +34,10 @@ public class AUX{
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String GET_URL_BASE_URL = "http://video.google.com/timedtext?lang=en&v=";
 	private static String GET_URL;
+    private static final boolean DEBUG = false;
 
     /*
-    *
+    * Sets the DEVELOPER_KEY variable
     */
     private static void GetDevKey(){
         if(DEVELOPER_KEY == null){
@@ -47,10 +48,7 @@ public class AUX{
         }
     }
 
-    /*
-    *
-    */
-    public static Video videoIdToObject(String videoId){
+    public static Video VideoIdToObject(String videoId) throws VideoException{
         GetDevKey();
 
         VideoListResponse videoResponse = new VideoListResponse();
@@ -75,36 +73,30 @@ public class AUX{
             return result;
         }
         catch (IOException e) {
-            Video tempVideo =  new Video(new VideoException("Unable to retrieve video"));
-            tempVideo.setTitle("Error!");
-            return tempVideo;
+            throw new VideoException("Unable to retrieve video");
         } 
         catch (IndexOutOfBoundsException e) {
-            Video tempVideo =  new Video(new VideoException("No such video found."));
-            tempVideo.setTitle("Error!");
-            return tempVideo;
+            throw new VideoException("No such video found.");
         } 
         catch (GeneralSecurityException e) {
-            Video tempVideo =  new Video(new VideoException("A security exception occurred"));
-            tempVideo.setTitle("Error!");
-            return tempVideo;
+            throw new VideoException("A security exception occurred");
         }
         catch(Exception e){
-            //Catch any other error that has been potentially overlooked
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
+            if(DEBUG){
+                //Catch any other error that has been potentially overlooked
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+            }
 
-            Video tempVideo =  new Video(new VideoException(sw.toString()));
-            tempVideo.setTitle("Error!");
-            return tempVideo;
+            throw new VideoException(sw.toString());
         }
         
         
     }
 
     /*
-    *
+    *Returns a list of video ID's based on a search query
     */
     public static ArrayList<String> searchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
         GetDevKey();
@@ -121,11 +113,13 @@ public class AUX{
                 .execute();
         }
         catch(Exception e){
-            //Print errors to console
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-            System.out.println(sw.toString());
+            if(DEBUG){
+                //Print errors to console
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                System.out.println(sw.toString());
+            }
         }
         
         ArrayList<String> videoIdList = new ArrayList<String>();
@@ -186,7 +180,7 @@ public class AUX{
     }
 
     /*
-    *
+    * Returns the captions of a video if any are available
     */
     private static String getVideoCaptions(String videoId){
         try{
