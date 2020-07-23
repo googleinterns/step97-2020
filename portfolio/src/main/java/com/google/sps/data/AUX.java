@@ -39,7 +39,7 @@ public class AUX{
     /*
     * Sets the DEVELOPER_KEY variable
     */
-    private static void GetDevKey(){
+    private static void getDevKey(){
         if(DEVELOPER_KEY == null){
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
             DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
@@ -48,8 +48,8 @@ public class AUX{
         }
     }
 
-    public static Video VideoIdToObject(String videoId) throws VideoException{
-        GetDevKey();
+    public static Video videoIdToObject(String videoId) throws VideoException{
+        getDevKey();
 
         VideoListResponse videoResponse = new VideoListResponse();
         try{
@@ -82,13 +82,12 @@ public class AUX{
             throw new VideoException("A security exception occurred");
         }
         catch(Exception e){
+            //Catch any other error that has been potentially overlooked
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
             if(DEBUG){
-                //Catch any other error that has been potentially overlooked
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
                 e.printStackTrace(pw);
             }
-
             throw new VideoException(sw.toString());
         }
         
@@ -99,7 +98,7 @@ public class AUX{
     *Returns a list of video ID's based on a search query
     */
     public static ArrayList<String> searchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
-        GetDevKey();
+        getDevKey();
         YouTube youtubeService = getService();
         // Define and execute the API request
         YouTube.Search.List searchRequest = youtubeService.search()
@@ -136,17 +135,14 @@ public class AUX{
     public static String youtubeUrlToId(String youtubeUrl)throws IllegalArgumentException{
         //There are 2 types of youtube links:
         String type0 = "https://youtu.be/";
-        String type1 = "https://www.youtube.com/";
+        String type1 = "https://www.youtube.com/watch?v=";
         
         int linkType;
 
-        if(youtubeUrl.length() < 17){
-            throw new IllegalArgumentException("Link provided is not a valid youtube link");    
-        }
-        if(youtubeUrl.substring(0, 17).compareTo(type0) == 0){
+        if(youtubeUrl.length() >= type0.length() && youtubeUrl.substring(0, type0.length()).compareTo(type0) == 0){
             linkType = 0;
         }
-        else if(youtubeUrl.substring(0, 24).compareTo(type1) == 0){
+        else if(youtubeUrl.length() >= type1.length() && youtubeUrl.substring(0, type1.length()).compareTo(type1) == 0){
             linkType = 1;
         }
         else{
@@ -160,13 +156,18 @@ public class AUX{
         else if(linkType == 1){
             int initIndex = youtubeUrl.indexOf("v=");
             int finalIndex = youtubeUrl.indexOf("&");
-            if(finalIndex == -1){
-                String result = youtubeUrl.substring(initIndex+2, youtubeUrl.length());
-                return result;
+            if(initIndex != -1){
+                if(finalIndex == -1){
+                    String result = youtubeUrl.substring(initIndex+2, youtubeUrl.length());
+                    return result;
+                }
+                else{
+                    String result = youtubeUrl.substring(initIndex+2, finalIndex+1);
+                    return result;
+                }
             }
             else{
-                String result = youtubeUrl.substring(initIndex+2, finalIndex+1);
-                return result;
+                return "";
             }
         }
         return "";

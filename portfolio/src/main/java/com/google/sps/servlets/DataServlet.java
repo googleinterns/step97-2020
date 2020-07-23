@@ -74,7 +74,7 @@ public class DataServlet extends HttpServlet {
         if(queryVideoEntity == null){
             Video video;
             try{
-                video = AUX.VideoIdToObject(id);
+                video = AUX.videoIdToObject(videoId);
             }
             catch (VideoException e){
                 sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, e.toString());
