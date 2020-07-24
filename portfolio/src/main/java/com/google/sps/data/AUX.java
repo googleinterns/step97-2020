@@ -53,14 +53,10 @@ public class AUX{
 
         VideoListResponse videoResponse = new VideoListResponse();
         try{
-            //Get youtube service
-            YouTube youtubeService = getService();
-
             // Define and execute the API request
-            YouTube.Videos.List videoRequest = youtubeService.videos()
-            .list("snippet");
-
-            videoResponse = videoRequest.setKey(DEVELOPER_KEY)
+            videoResponse = getService().videos()
+            .list("snippet")
+            .setKey(DEVELOPER_KEY)
             .setId(videoId)
             .execute();
 
@@ -113,7 +109,7 @@ public class AUX{
         }
         catch(Exception e){
             if(DEBUG){
-                //Print errors to console
+                //Print error to console
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
                 e.printStackTrace(pw);
@@ -191,7 +187,7 @@ public class AUX{
             con.setRequestMethod("GET");
             int responseCode = con.getResponseCode();
 
-            //If the get request worked, read it into a string. It should come as an xml file
+            //If the GET request worked, read it from the buffer and put it into a string. It should come as an xml file
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String inputLine;
@@ -201,11 +197,8 @@ public class AUX{
                     stringResponse.append(inputLine);
                 }
                 in.close();
-
-                // print result
                 return stringResponse.toString();
             } 
-            
             else {
                 //Get request failed.
                 return "";

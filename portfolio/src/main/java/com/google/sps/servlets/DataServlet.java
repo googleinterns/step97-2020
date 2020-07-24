@@ -77,7 +77,7 @@ public class DataServlet extends HttpServlet {
                 video = AUX.videoIdToObject(videoId);
             }
             catch (VideoException e){
-                sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, e.toString());
+                sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
                 return;
             }
             Entity videoEntity = Video.videoToDatastoreEntity(video);
