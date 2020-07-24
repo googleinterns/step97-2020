@@ -124,51 +124,6 @@ public class AUX{
         return videoIdList;
     }
 
-    /*
-    *Retrieve video id from youtube url
-    *@return a video id as string
-    */
-    public static String youtubeUrlToId(String youtubeUrl)throws IllegalArgumentException{
-        //There are 2 types of youtube links:
-        String type0 = "https://youtu.be/";
-        String type1 = "https://www.youtube.com/watch?v=";
-        
-        int linkType;
-
-        if(youtubeUrl.length() >= type0.length() && youtubeUrl.substring(0, type0.length()).compareTo(type0) == 0){
-            linkType = 0;
-        }
-        else if(youtubeUrl.length() >= type1.length() && youtubeUrl.substring(0, type1.length()).compareTo(type1) == 0){
-            linkType = 1;
-        }
-        else{
-            throw new IllegalArgumentException("Link provided is not a valid youtube link");
-        }
-
-        if(linkType == 0){
-            String result = youtubeUrl.substring(17, youtubeUrl.length());
-            return result;
-        }
-        else if(linkType == 1){
-            int initIndex = youtubeUrl.indexOf("v=");
-            int finalIndex = youtubeUrl.indexOf("&");
-            if(initIndex != -1){
-                if(finalIndex == -1){
-                    String result = youtubeUrl.substring(initIndex+2, youtubeUrl.length());
-                    return result;
-                }
-                else{
-                    String result = youtubeUrl.substring(initIndex+2, finalIndex+1);
-                    return result;
-                }
-            }
-            else{
-                return "";
-            }
-        }
-        return "";
-    }
-
     private static YouTube getService() throws IOException, GeneralSecurityException{
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         return new YouTube.Builder(httpTransport, JSON_FACTORY, null)
