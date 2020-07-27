@@ -33,7 +33,6 @@ public class SearchQuery {
         } else {
             // Using only title and description seems to work well.
             String metadata = (video.getTitle() + " " + video.getDescription()).toLowerCase();
-
             // A request with a few hundred words takes around 10 seconds to process.
             // Quotas are 600 requests/sec and 800k requests/day.
             Document doc =
@@ -45,9 +44,18 @@ public class SearchQuery {
 
             // Take top few distinct words (they are autosorted by decreasing salience).
             queryText = response.getEntitiesList().stream()
+                // Require a basic amount of salience (importance)
+                .filter(e -> e.getSalience() > 0.12)
                 .map(e -> e.getName())
+                // Make sure entities are distinct
                 .distinct()
-                .limit(querySize)
+                // Remove excessively long entities
+                .filter(e -> e.length() < 30)
+                // Only allow phrases with letters and numbers (no special chars)
+                .filter(e -> e.matches("^[a-zA-Z0-9 ]+$"))
+                // Remove URLs
+                .filter(e -> !e.matches("^http[a-zA-Z]?:.*$"))
+                .limit(10)
                 .collect(Collectors.joining(" "));
         }
         this.queryText = queryText;
