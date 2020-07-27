@@ -1,4 +1,14 @@
+import com.google.sps.data.ErrorConsts;
 import com.google.sps.servlets.DataServlet;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import java.io.*;
@@ -23,6 +33,7 @@ import static org.mockito.Mockito.when;
 * Test[rest of name].java -> TestBlahBlahBlah.java
 */
 public class DataServletUnitTest extends Mockito {
+  String TEST_VIDEO_ID = "abcdefghijklmnop";
   private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
   .setDefaultHighRepJobPolicyUnappliedJobPercentage(100));
 
@@ -48,20 +59,20 @@ public class DataServletUnitTest extends Mockito {
         //begin a get request with our parameter
         new DataServlet().doGet(request, response);
         writer.flush(); // it may not have been flushed yet...
-        assertEquals(true, stringWriter.toString().contains("Video id cannot be empty."));
+        assertEquals(true, stringWriter.toString().contains(ErrorConsts.EMPTY_VIDEO_ID));
     }
     @Test
     public void testDoGetWithUnusedVideoId() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);    
-        //Add an empty video id parameter to the get request
-        when(request.getParameter("videoId")).thenReturn("abcdefghijklmnop");
+        //Add a video id parameter to the get request
+        when(request.getParameter("videoId")).thenReturn(this.TEST_VIDEO_ID);
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         //begin a get request with our parameter
         new DataServlet().doGet(request, response);
         writer.flush(); // it may not have been flushed yet...
-        assertEquals(true, stringWriter.toString().contains("Video not found in database."));
+        assertEquals(true, stringWriter.toString().contains(ErrorConsts.VIDEO_NOT_FOUND_IN_DB));
     }
 }
