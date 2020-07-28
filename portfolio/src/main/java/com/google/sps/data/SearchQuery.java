@@ -30,7 +30,7 @@ public class SearchQuery {
         String queryText;
         List<String> keywordList;
         if (languageService == null) {
-            keywordList = Arrays.asList(video.getTitle().split(" "));
+            keywordList = Arrays.asList(video.getTitle().split("\\s+"));
         } else {
             // Using only title and description seems to work well.
             String metadata = (video.getTitle() + " " + video.getDescription()).toLowerCase();
@@ -46,6 +46,7 @@ public class SearchQuery {
             // Take top few distinct words (they are autosorted by decreasing salience).
             keywordList = response.getEntitiesList().stream()
                 // Require a basic amount of salience (importance)
+                // Generally important words seemed to be above 0.15 and unimportant words seemed to be less than 0.10.
                 .filter(e -> e.getSalience() > 0.12)
                 .map(e -> e.getName())
                 .collect(Collectors.toList());
