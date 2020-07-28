@@ -10,19 +10,19 @@
         <section id="search-section">
             <div id="search-container">
                 <!-- Toggle switch for searching for video vs playlist, improve styling later. -->
-                <div id="toggle-container">
-                    <button id="select-video" onclick="toggleVideo()">Video</button>
-                    <button id="select-playlist" onclick="togglePlaylist()">Playlist</button>
-                </div>
                 <form id="search-form">
                     <div class="form-group">
                         <label for="id-field">ID</label>
                         <input id="id-field" name="id" type="text"/>
-                        <input type="submit" style="display:none">
                     </div>
+                    <div class="form-group">
+                        <label for="is-playlist">Playlist?</label>
+                        <input id="is-playlist" name="isPlaylist" type="checkbox">
+                    </div>
+                    <input type="submit" style="display:none">
                 </form>
                 <!-- Only display analyze button when an object has been chosen. -->
-                <button id="analyze-button" onclick="analyzeVideo()" style="display:none">Analyze</button>
+                <button id="analyze-button" onclick="isPlaylist ? analyzePlaylist() : analyzeVideo()" style="display:none">Analyze</button>
             </div>
         </section>
         <!-- Hide analysis when searching. -->

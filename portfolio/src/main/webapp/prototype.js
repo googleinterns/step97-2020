@@ -20,39 +20,18 @@ let isPlaylist = false;
 let playlistVideos = null;
 
 // Listener for submitting a video.
-function videoListener(e) {
-    submitVideo();
-    // Prevents default action for the event.
+function formListener(e) {
+    if (document.getElementById(elements.isPlaylist).checked) {
+        isPlaylist = true;
+        submitPlaylist();
+    } else {
+        isPlaylist = false;
+        submitVideo();
+    }
     e.preventDefault();
 };
 
-// Listener for submitting a playlist.
-function playlistListener(e) {
-    submitPlaylist();
-    // Prevents default action for the event.
-    e.preventDefault();
-}
-
-// Default to submitting a video.
-document.getElementById(elements.searchForm).addEventListener('submit', videoListener, false);
-
-// Switch to analyzing videos.
-function toggleVideo() {
-    isPlaylist = false;
-    // Switch to listener for videos.
-    document.getElementById(elements.searchForm).removeEventListener('submit', playlistListener, false);
-    document.getElementById(elements.searchForm).addEventListener('submit', videoListener, false);
-    document.getElementById(elements.analyzeButton).onclick = analyzeVideo;
-}
-
-// Switch to analyzing playlists.
-function togglePlaylist() {
-    isPlaylist = true;
-    // Switch to listener for playlists.
-    document.getElementById(elements.searchForm).removeEventListener('submit', videoListener, false);
-    document.getElementById(elements.searchForm).addEventListener('submit', playlistListener, false);
-    document.getElementById(elements.analyzeButton).onclick = analyzePlaylist;
-}
+document.getElementById(elements.searchForm).addEventListener('submit', formListener, false);
 
 // Submit video so that data can be stored by DataServlet.
 async function submitVideo() {
