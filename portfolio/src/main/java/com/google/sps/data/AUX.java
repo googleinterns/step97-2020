@@ -146,7 +146,7 @@ public class AUX{
         }
 
         if(linkType == 0){
-            String result = youtubeUrl.substring(17, youtubeUrl.length());
+            String result = youtubeUrl.substring(type0.length(), youtubeUrl.length());
             return result;
         }
         else if(linkType == 1){
