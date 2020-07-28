@@ -50,7 +50,13 @@ public class SearchQuery {
                 .map(e -> e.getName())
                 .collect(Collectors.toList());
         }
-        queryText = keywordList.stream()
+        queryText = filterKeywords(keywordList, querySize);
+        this.queryText = queryText;
+    }
+
+    // Return a query string with filtered keywords
+    public static String filterKeywords(List<String> keywordList, int querySize) {
+        return keywordList.stream()
         // Make sure entities are distinct
         .distinct()
         // Remove excessively long entities
@@ -59,9 +65,8 @@ public class SearchQuery {
         .filter(e -> e.matches("^[a-zA-Z0-9 ]+$"))
         // Remove URLs
         .filter(e -> !e.matches("^http[s]?:[^ ]*$"))
-        .limit(10)
+        .limit(querySize)
         .collect(Collectors.joining(" "));
-        this.queryText = queryText;
     }
 
     public String toString() {
