@@ -109,4 +109,20 @@ public class Video {
     public String getCaptions() {
         return captions;
     }
+
+    public void setThumbnailUrl(String thumbnailUrl) throws MalformedURLException{
+        this.thumbnailUrl = new URL(thumbnailUrl);
+    }
+
+    public URL getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
 }
