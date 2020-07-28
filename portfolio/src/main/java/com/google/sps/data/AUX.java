@@ -93,7 +93,7 @@ public class AUX{
     /*
     *Returns a list of video ID's based on a search query
     */
-    public static ArrayList<String> searchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
+    public static ArrayList<String> searchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{git 
         getDevKey();
         YouTube youtubeService = getService();
         // Define and execute the API request
