@@ -2,8 +2,7 @@
 elements = {
     idField: "id-field",
     searchForm: "search-form",
-    selectVideo: "select-video",
-    selectPlaylist: "select-playlist",
+    isPlaylist: "is-playlist",
     analyzeButton: "analyze-button",
     analysisSection: "analysis-section",
     listPane: "list-pane",
