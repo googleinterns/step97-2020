@@ -63,6 +63,7 @@ public class DataServletUnitTest extends Mockito {
       writer.flush(); // it may not have been flushed yet...
       assertEquals(true, stringWriter.toString().contains(ErrorConsts.EMPTY_VIDEO_ID));
     }
+    
     @Test
     public void testDoGetWithUnusedVideoId() throws Exception {
       HttpServletRequest request = mock(HttpServletRequest.class);       
@@ -77,6 +78,7 @@ public class DataServletUnitTest extends Mockito {
       writer.flush(); // it may not have been flushed yet...
       assertEquals(true, stringWriter.toString().contains(ErrorConsts.VIDEO_NOT_FOUND_IN_DB));
     }
+
     @Test
     public void testDoGetWithValidId() throws Exception {
       HttpServletRequest request = mock(HttpServletRequest.class);       
