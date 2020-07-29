@@ -10,5 +10,6 @@ elements = {
     analysisPane: "analysis-pane",
     analysisIframe: "analysis-iframe",
     happyMeter: "happy-meter",
-    analysisSearch: "analysis-search"
+    analysisSearch: "analysis-search",
+    topButton: "top-button"
 }

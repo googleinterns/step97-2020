@@ -180,3 +180,21 @@ function clearAnalysis() {
     document.getElementById(elements.analyzeButton).style.display = "none";
     document.getElementById(elements.analysisSection).style.display = "none";
 }
+
+// Functions for a button to go top of page.
+// Based on W3Schools tutorial: https://www.w3schools.com/howto/howto_js_scroll_to_top.asp
+window.onscroll = function(){updateTopButton()};
+
+function updateTopButton() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById(elements.topButton).style.display = "block";
+    } else {
+        document.getElementById(elements.topButton).style.display = "none";
+    }
+}
+
+// Go back to the top of the page for a new analysis.
+function goToTop() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
