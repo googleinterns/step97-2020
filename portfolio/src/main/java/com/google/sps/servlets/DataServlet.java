@@ -25,7 +25,14 @@ import java.security.GeneralSecurityException;
 @WebServlet("/data")
 
 public class DataServlet extends HttpServlet {
-    private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static DatastoreService datastore;
+    public DataServlet() {
+        datastore = DatastoreServiceFactory.getDatastoreService();
+    }
+
+    public DataServlet(DatastoreService datastore_){
+        datastore = datastore_;
+    }
     private static final boolean DEBUG = false;
 
     @Override
