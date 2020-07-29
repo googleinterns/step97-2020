@@ -26,20 +26,18 @@ public class YoutubeUrlToIdTest{
     //Test case when invalid link is provided
     @Test
     public void InvalidLinkProvided(){
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {AUX.youtubeUrlToId(INVALID_LINK);});
-        String expectedMessage = "Link provided is not a valid youtube link";
-        String actualMessage = thrown.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
+        String testUrl = type1;
+        String result = AUX.youtubeUrlToId(testUrl);
+        assertEquals("", result);
         
     }
 
     //Test case when no link is provided
     @Test
     public void NoLinkProvided(){
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {AUX.youtubeUrlToId("");});
-        String expectedMessage = "Link provided is not a valid youtube link";
-        String actualMessage = thrown.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
+        String testUrl = type1;
+        String result = AUX.youtubeUrlToId(testUrl);
+        assertEquals("", result);
     }
 
     //Test case for type0 link
