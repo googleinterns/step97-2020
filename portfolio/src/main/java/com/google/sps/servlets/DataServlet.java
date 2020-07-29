@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Text;
 import com.google.sps.data.AUX;
+import com.google.sps.data.ErrorConsts;
 import com.google.sps.data.PropertyNames;
 import com.google.sps.data.Video;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class DataServlet extends HttpServlet {
         //Check if we get a valid video ID as a parameter 
         String videoId = request.getParameter(PropertyNames.VIDEO_ID);
         if(videoId == null || videoId.isEmpty()){
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video id cannot be empty.");
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.EMPTY_VIDEO_ID);
             return;
         }
         //Create custom key using video id.
@@ -49,7 +50,7 @@ public class DataServlet extends HttpServlet {
         try {
             video = datastore.get(videoKey);
         } catch (EntityNotFoundException e){
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.VIDEO_NOT_FOUND_IN_DB);
             return;
         }
         String videoObjectJson = ((Text) video.getProperty(PropertyNames.VIDEO_OBJECT_AS_JSON)).getValue();
@@ -69,7 +70,7 @@ public class DataServlet extends HttpServlet {
         //Run a query to see if we get any results from the video ID of the POST request
         String videoId = request.getParameter(PropertyNames.VIDEO_ID);
         if (videoId == null || videoId.isEmpty()) {
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video ID cannot be empty.");
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.EMPTY_VIDEO_ID);
             return;
         }
         Query query = new Query("Video")
@@ -82,13 +83,13 @@ public class DataServlet extends HttpServlet {
             try {
                 video = AUX.VideoIdToObject(videoId);
             } catch (IOException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Unable to retrieve video.");
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, ErrorConsts.UNABLE_TO_RETRIEVE);
                 return;
             } catch (IndexOutOfBoundsException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "No such video found.");
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, ErrorConsts.NO_VIDEO_QUERY_MATCHES);
                 return;
             } catch (GeneralSecurityException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "A security exception occurred.");
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, ErrorConsts.SECURITY_EXCEPTION);
                 return;
             }
             Entity videoEntity = Video.videoToDatastoreEntity(video);
