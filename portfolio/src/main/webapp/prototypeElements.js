@@ -14,5 +14,10 @@ elements = {
     analysisIframe: "analysis-iframe",
     happyMeter: "happy-meter",
     analysisSearch: "analysis-search",
-    topButton: "top-button"
+    topButton: "top-button",
+    previewSearchFlexbox: "preview-search-flexbox",
+    previewSection: "preview-section",
+    previewContainer: "preview-container",
+    thumbnailImage: "thumbnail-image",
+    videoTitle: "video-title"
 }

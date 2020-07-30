@@ -80,8 +80,25 @@ async function submitObject() {
     // If the load succeeded, display the analysis button.
     if (successful) {
         //ADD SOME PREVIEW HERE
-        document.getElementById(elements.analyzeButton).style.display = "block";
+        let request = new Request("/data?videoId=" + objectId, {method: "GET"});
+        let response = await fetch(request);
+        if (response.status >= 400) {
+            alert(await response.text());
+            return false;
+        }
+        // Update and show the preview with the response fields.
+        preview = await response.json();
+        previewVideo(preview)
+        document.getElementById(elements.analyzeButton).removeAttribute("style");
     }
+}
+
+    
+// Take a Video object and preview it
+function previewVideo(video) {
+    document.getElementById(elements.thumbnailImage).src = video.thumbnailUrl;
+    document.getElementById(elements.videoTitle).innerHTML = video.title;
+    document.getElementById(elements.previewSection).removeAttribute("display");
 }
 
 // Analyze the currently selected video object.
@@ -193,7 +210,6 @@ function showVideoAnalysis(videoAnalysis) {
     document.getElementById(elements.analysisIframe).src = 
         "https://www.youtube.com/embed/" + videoAnalysis.videoId;
     document.getElementById(elements.happyMeter).value = videoAnalysis.sentimentScore;
-    google.search.cse.element.getElement(elements.analysisSearch).execute(videoAnalysis.searchQueryString);
 }
 
 // Hides the analysis section and resets global variables.
