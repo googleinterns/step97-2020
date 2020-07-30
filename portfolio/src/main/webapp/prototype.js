@@ -87,15 +87,15 @@ async function submitObject() {
             return false;
         }
         // Update and show the preview with the response fields.
-        preview = await response.json();
-        previewVideo(preview)
+        video = await response.json();
+        displayPreview(video)
         document.getElementById(elements.analyzeButton).removeAttribute("style");
     }
 }
 
     
 // Take a Video object and preview it
-function previewVideo(video) {
+function displayPreview(video) {
     document.getElementById(elements.thumbnailImage).src = video.thumbnailUrl;
     document.getElementById(elements.videoTitle).innerHTML = video.title;
     document.getElementById(elements.previewSection).removeAttribute("display");
