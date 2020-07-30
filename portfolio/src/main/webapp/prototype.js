@@ -19,21 +19,16 @@ let isPlaylist = false;
 // List of videos for current playlist.
 let playlistVideos = null;
 
-// Listener for submitting a video.
+// Listener for submitting an object (video or playlist).
 function formListener(e) {
-    if (document.getElementById(elements.isPlaylist).checked) {
-        isPlaylist = true;
-        submitPlaylist();
-    } else {
-        isPlaylist = false;
-        submitVideo();
-    }
+    submitObject();
     e.preventDefault();
 };
 
 document.getElementById(elements.searchForm).addEventListener('submit', formListener, false);
 
 // Submit video so that data can be stored by DataServlet.
+// Returns true if sucessful.
 async function submitVideo() {
     clearAnalysis();
     // Get the id value from the id field.
@@ -45,17 +40,17 @@ async function submitVideo() {
     // Alert the user if any errors occurred.
     if (response.status >= 400) {
         alert(responseText);
-        return;
+        return false;
     }
     // If request is successful, set global id variable.
     objectId = curId;
     isPlaylist = false;
     playlistVideos = null;
-    // ADD SOME PREVIEW HERE.
-    document.getElementById(elements.analyzeButton).style.display = "block";
+    return true;
 }
 
 // Submit playlist so that data can be stored by PlaylistServlet.
+// Returns true if successful.
 async function submitPlaylist() {
     clearAnalysis();
     // Make a request for the PlaylistServlet to store the playlist videos.
@@ -64,62 +59,75 @@ async function submitPlaylist() {
     // Check if any errors occurred.
     if (response.status >= 400) {
         alert(await response.text());
-        return;
+        return false;
     }
     // If no errors occurred, set global object fields.
     objectId = curId;
     isPlaylist = true;
     playlistVideos = await response.json();
-    // SOME PREVIEW HERE.
-    document.getElementById(elements.analyzeButton).style.display = "block";
+    return true;
+}
+
+// Submit an object to be stored (either a playlist or video).
+async function submitObject() {
+    // Show loader icon
+    document.getElementById(elements.submitLoader).style.display = "";
+    // Check if the object is a playlist and run the appropriate function.
+    isPlaylist = document.getElementById(elements.isPlaylist).checked;
+    successful = isPlaylist ? await submitPlaylist() : await submitVideo();
+    // Hide loader icon
+    document.getElementById(elements.submitLoader).style.display = "none";
+    // If the load succeeded, display the analysis button.
+    if (successful) {
+        //ADD SOME PREVIEW HERE
+        document.getElementById(elements.analyzeButton).style.display = "block";
+    }
 }
 
 // Analyze the currently selected video object.
+// Returns true if successful.
 async function analyzeVideo() {
     if (isPlaylist) {
         alert("The selected item is not a video.");
-        return;
+        return false;
     }
     // Ensure that global id variable is set.
     if (objectId === null) {
         alert("No video selected.");
-        return;
+        return false;
     }
     // Post the video for analysis.
     let request = new Request("/analysis?videoId=" + objectId, {method: "POST"});
     let response = await fetch(request);
     if (response.status >= 400) {
         alert(await response.text());
-        return;
+        return false;
     }
     // Get the results of the analysis.
     request = new Request("/analysis?videoId=" + objectId, {method: "GET"});
     response = await fetch(request);
+    // Check for errors
     if (response.status >= 400) {
         alert(await response.text());
-        return;
+        return false;
     }
     // Update and show the analysis with the response fields.
     videoAnalysis = await response.json();
     showVideoAnalysis(videoAnalysis);
+    // Don't need to display list pane for video analysis.
     document.getElementById(elements.listPane).style.display = "none";
-    document.getElementById(elements.analysisSection).style.display = "flex";
-    // Jump to anlaysis section.
-    window.location.hash="";
-    window.location.hash = "analysis-section";
-    document.getElementById(elements.idField).value = "";
-    document.getElementById(elements.analyzeButton).style.display = "none";
+    return true;
 }
 
 async function analyzePlaylist() {
     if (!isPlaylist) {
         alert("The selected item is not a playlist.");
-        return;
+        return false;
     }
     // Ensure that global id variable is set.
     if (objectId === null) {
         alert("No playlist selected.");
-        return;
+        return false;
     }
     // Make a post request to store video analyses.
     const requests = playlistVideos.map(video => fetch("/analysis?videoId=" + video.videoId, {method: "POST"}));
@@ -132,13 +140,27 @@ async function analyzePlaylist() {
     // Show analyses.
     showListPane(playlistAnalyses);
     showVideoAnalysis(playlistAnalyses[0]);
+    // Show list pane for playlist entries.
     document.getElementById(elements.listPane).style.display = "block";
-    document.getElementById(elements.analysisSection).style.display = "flex";
-    // Jump to analysis section.
-    window.location.hash="";
-    window.location.hash = "analysis-section";
-    document.getElementById(elements.idField).value = "";
-    document.getElementById(elements.analyzeButton).style.display = "none";
+    return true;
+}
+
+// Analyze the selected object (either a video or playlist).
+async function analyzeObject() {
+    // Show loader icon
+    document.getElementById(elements.analyzeLoader).style.display = "";
+    // Run the appropriate function and store whether it was successful.
+    const successful = isPlaylist ? await analyzePlaylist() : await analyzeVideo();
+    // Hide loader icon
+    document.getElementById(elements.analyzeLoader).style.display = "none";
+    // If successful, jump to analysis.
+    if (successful) {
+        document.getElementById(elements.analysisSection).style.display = "flex";
+        window.location.hash="";
+        window.location.hash = "analysis-section";
+        document.getElementById(elements.idField).value = "";
+        document.getElementById(elements.analyzeButton).style.display = "none";
+    }
 }
 
 // Show the list pane given the analyses for a playlist.
@@ -149,23 +171,25 @@ function showListPane(playlistAnalyses) {
         document.getElementById(elements.playlistEntries).innerHTML += `
         <li class="video-entry" id="entry-` + entryCount +`">
             <p>` + analysis.videoTitle + `</p>
-            <img src="` + analysis.thumbnailUrl + `">
+            <img id="entry-thumbnail-` + entryCount + `" src="` + analysis.thumbnailUrl + `">
         </li>`;
         entryCount ++;
     }
-    // Add onclick functions so that clicking on an entry updates the analysis pane.
+    // Add onclick functions and thumbnails for entries.
     // Had to do this in a separate loop so that the onclick function would be saved.
     entryCount = 0;
     for (let analysis of playlistAnalyses) {
         document.getElementById("entry-" + entryCount).onclick = function() {
             showVideoAnalysis(analysis);
         };
+        document.getElementById("entry-thumbnail-" + entryCount).style.width = "18vw";
         entryCount ++;
     }
 }
 
 // Take a VideoAnalysis object and display the results in the analysis pane.
 function showVideoAnalysis(videoAnalysis) {
+    document.getElementById(elements.analysisTitle).textContent = videoAnalysis.videoTitle;
     document.getElementById(elements.analysisIframe).src = 
         "https://www.youtube.com/embed/" + videoAnalysis.videoId;
     document.getElementById(elements.happyMeter).value = videoAnalysis.sentimentScore;
