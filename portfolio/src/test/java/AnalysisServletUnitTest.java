@@ -74,6 +74,6 @@ public class AnalysisServletUnitTest extends Mockito {
         //begin a get request with our parameter
         new AnalysisServlet().doGet(request, response);
         writer.flush(); // it may not have been flushed yet...
-        assertEquals(true, stringWriter.toString().contains(ErrorConsts.VIDEO_NOT_FOUND_IN_DB));
+        assertEquals(true, stringWriter.toString().contains(ErrorConsts.ANALYSIS_NOT_FOUND_IN_DB));
     }
 }
