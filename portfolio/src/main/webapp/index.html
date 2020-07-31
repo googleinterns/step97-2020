@@ -7,28 +7,30 @@
     </head>
     <body>
         <!-- Section for searching for a video or playlist. -->
-        <section id="search-section">
-            <div id="search-container">
-                <!-- Toggle switch for searching for video vs playlist, improve styling later. -->
-                <form id="search-form">
-                    <div class="form-group">
-                        <label for="id-field">ID</label>
-                        <input id="id-field" name="id" type="text"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="is-playlist">Playlist?</label>
-                        <input id="is-playlist" name="isPlaylist" type="checkbox">
-                    </div>
-                    <input type="submit" style="display:none">
-                </form>
-                <button id="submit-button" onclick="submitObject()">
-                    <i id="submit-loader" class="fa fa-circle-o-notch fa-spin" style="display:none"></i>Load
-                </button>
-                <!-- Only display analyze button when an object has been chosen. -->
-                <button id="analyze-button" onclick="analyzeObject()" style="display:none">
-                    <i id="analyze-loader" class="fa fa-circle-o-notch fa-spin" style="display:none"></i>Analyze
-                </button>
+        <section id="preview-search-container">
+            <!-- Toggle switch for searching for video vs playlist, improve styling later. -->
+            <form id="search-form">
+                <div class="form-group">
+                    <label for="id-field">ID</label>
+                    <input id="id-field" name="id" type="text"/>
+                </div>
+                <div class="form-group">
+                    <label for="is-playlist">Playlist?</label>
+                    <input id="is-playlist" name="isPlaylist" type="checkbox">
+                </div>
+                <input type="submit" style="display:none">
+            </form>
+            <button id="submit-button" onclick="submitObject()">
+                <i id="submit-loader" class="fa fa-circle-o-notch fa-spin" style="display:none"></i>Load
+            </button>
+            <div id="preview-container" style="display:none">
+                <image id ="thumbnail-image"></image>
+                <h4 id ="video-title"></h4>
             </div>
+            <!-- Only display analyze button when an object has been chosen. -->
+            <button id="analyze-button" onclick="analyzeObject()" style="display:none">
+                <i id="analyze-loader" class="fa fa-circle-o-notch fa-spin" style="display:none"></i>Analyze
+            </button>
         </section>
         <!-- Hide analysis when searching. -->
         <section id="analysis-section" style="display:none">

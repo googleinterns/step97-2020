@@ -4,6 +4,9 @@ elements = {
     searchForm: "search-form",
     isPlaylist: "is-playlist",
     submitLoader: "submit-loader",
+    previewContainer: "preview-container",
+    thumbnailImage: "thumbnail-image",
+    videoTitle: "video-title",
     analyzeButton: "analyze-button",
     analyzeLoader: "analyze-loader",
     analysisSection: "analysis-section",
@@ -14,5 +17,5 @@ elements = {
     analysisIframe: "analysis-iframe",
     happyMeter: "happy-meter",
     analysisSearch: "analysis-search",
-    topButton: "top-button"
+    topButton: "top-button",
 }

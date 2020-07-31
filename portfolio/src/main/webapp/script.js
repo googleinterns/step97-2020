@@ -34,8 +34,8 @@ async function submitVideo() {
     // Get the id value from the id field.
     let curId = document.getElementById(elements.idField).value;
     // Request to store the video in the database.
-    const request = new Request("/data?videoId=" + curId, {method: "POST"});
-    const response = await fetch(request);
+    let request = new Request("/data?videoId=" + curId, {method: "POST"});
+    let response = await fetch(request);
     const responseText = await response.text()
     // Alert the user if any errors occurred.
     if (response.status >= 400) {
@@ -46,6 +46,16 @@ async function submitVideo() {
     objectId = curId;
     isPlaylist = false;
     playlistVideos = null;
+    // Request for preview information.
+    request = new Request("/data?videoId=" + objectId, {method: "GET"});
+    response = await fetch(request);
+    if (response.status >= 400) {
+        alert(await response.text());
+        return false;
+    }
+    // Update and show the preview with the response fields.
+    video = await response.json();
+    displayVideoPreview(video)
     return true;
 }
 
@@ -65,6 +75,8 @@ async function submitPlaylist() {
     objectId = curId;
     isPlaylist = true;
     playlistVideos = await response.json();
+    // Preivew the first video..
+    displayVideoPreview(playlistVideos[0]);
     return true;
 }
 
@@ -79,9 +91,16 @@ async function submitObject() {
     document.getElementById(elements.submitLoader).style.display = "none";
     // If the load succeeded, display the analysis button.
     if (successful) {
-        //ADD SOME PREVIEW HERE
-        document.getElementById(elements.analyzeButton).style.display = "block";
+        document.getElementById(elements.analyzeButton).style = "display: block";
     }
+}
+
+    
+// Take a Video object and preview it
+function displayVideoPreview(video) {
+    document.getElementById(elements.thumbnailImage).src = video.thumbnailUrl;
+    document.getElementById(elements.videoTitle).innerHTML = video.title;
+    document.getElementById(elements.previewContainer).style.display = "block";
 }
 
 // Analyze the currently selected video object.
@@ -158,7 +177,9 @@ async function analyzeObject() {
         document.getElementById(elements.analysisSection).style.display = "flex";
         window.location.hash="";
         window.location.hash = "analysis-section";
+        // Hide old search elements.
         document.getElementById(elements.idField).value = "";
+        document.getElementById(elements.previewContainer).style.display = "none";
         document.getElementById(elements.analyzeButton).style.display = "none";
     }
 }
@@ -201,7 +222,7 @@ function clearAnalysis() {
     objectId = null;
     isPlaylist = null;
     playlistVideos = null;
-    document.getElementById("playlist-entries").innerHTML = "";
+    document.getElementById(elements.playlistEntries).innerHTML = "";
     document.getElementById(elements.analyzeButton).style.display = "none";
     document.getElementById(elements.analysisSection).style.display = "none";
 }
