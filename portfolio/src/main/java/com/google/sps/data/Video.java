@@ -2,6 +2,8 @@ package com.google.sps.data;
 import com.google.sps.data.PropertyNames;
 import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.PlaylistItemSnippet;
+import com.google.api.services.youtube.model.Thumbnail;
+import com.google.api.services.youtube.model.ThumbnailDetails;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Key;
@@ -71,8 +73,14 @@ public class Video {
         String videoId = snippet.getResourceId().getVideoId();
         String videoTitle = snippet.getTitle();
         String videoDescription = snippet.getDescription();
-        String thumbnailUrl = snippet.getThumbnails().getDefault().getUrl();
         boolean isPublic = !playlistItem.getStatus().getPrivacyStatus().equals("private");
+        String thumbnailUrl;
+        if (!isPublic) {
+            // Set url to unavailable thumbnail.
+            thumbnailUrl = "http://i.ytimg.com/vi/D5_RLA5NJAY/hqdefault.jpg";
+        } else {
+            thumbnailUrl = maxResThumbnailUrl(snippet.getThumbnails());
+        }
         return new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
     }
 
@@ -124,5 +132,21 @@ public class Video {
 
     public boolean isPublic() {
         return isPublic;
+    }
+
+    // Given thumbnails, get the highest quality one.
+    public static String maxResThumbnailUrl(ThumbnailDetails details) {
+            Thumbnail[] thumbnails = new Thumbnail[]{
+                details.getMaxres(),
+                details.getStandard(),
+                details.getHigh(),
+                details.getMedium(),
+                details.getDefault()
+            };
+            Thumbnail highestRes = null;
+            for (int thumbnailInd = 0; highestRes == null; thumbnailInd ++) {
+                highestRes = thumbnails[thumbnailInd];
+            }
+            return highestRes.getUrl();
     }
 }

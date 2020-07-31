@@ -81,7 +81,7 @@ nav {
     margin: 0px;
 }
 
-nav ul{
+nav ol{
     list-style-type: none;
     width: 20vw;
     height: 100vh;
