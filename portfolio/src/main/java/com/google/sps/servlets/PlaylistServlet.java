@@ -74,7 +74,7 @@ public class PlaylistServlet extends HttpServlet{
                 .setFields("items("+
                     "snippet/title," +
                     "snippet/description," +
-                    "snippet/thumbnails/default/url," +
+                    "snippet/thumbnails," +
                     "snippet/resourceId/videoId," +
                     "status/privacyStatus)," +
                     "nextPageToken");
@@ -82,12 +82,18 @@ public class PlaylistServlet extends HttpServlet{
         PlaylistItemListResponse playlistResponse;
         // Loop through all pages of results until there are none left.
         do {
-            playlistResponse = 
-                playlistRequest
-                    .setKey(apiKey)
-                    .setPlaylistId(playlistId)
-                    .setMaxResults(50L)
-                    .execute();
+            // Ensure playlist exists.
+            try {
+                playlistResponse = 
+                    playlistRequest
+                        .setKey(apiKey)
+                        .setPlaylistId(playlistId)
+                        .setMaxResults(50L)
+                        .execute();
+            } catch (GoogleJsonResponseException e) {
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, "Playlist not found.");
+                return;
+            }
             for (PlaylistItem item : playlistResponse.getItems()) {
                 playlistVideos.add(Video.videoFromPlaylistItem(item));
             }
