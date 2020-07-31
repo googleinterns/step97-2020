@@ -4,6 +4,9 @@ elements = {
     searchForm: "search-form",
     isPlaylist: "is-playlist",
     submitLoader: "submit-loader",
+    previewContainer: "preview-container",
+    thumbnailImage: "thumbnail-image",
+    videoTitle: "video-title",
     analyzeButton: "analyze-button",
     analyzeLoader: "analyze-loader",
     analysisSection: "analysis-section",
@@ -15,9 +18,4 @@ elements = {
     happyMeter: "happy-meter",
     analysisSearch: "analysis-search",
     topButton: "top-button",
-    previewSearchFlexbox: "preview-search-flexbox",
-    previewSection: "preview-section",
-    previewContainer: "preview-container",
-    thumbnailImage: "thumbnail-image",
-    videoTitle: "video-title"
 }
