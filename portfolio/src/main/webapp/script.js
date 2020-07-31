@@ -80,22 +80,31 @@ async function submitObject() {
     // If the load succeeded, display the analysis button.
     if (successful) {
         //ADD SOME PREVIEW HERE
-        let request = new Request("/data?videoId=" + objectId, {method: "GET"});
-        let response = await fetch(request);
-        if (response.status >= 400) {
-            alert(await response.text());
-            return false;
+        if(!isPlaylist) {
+            let request = new Request("/data?videoId=" + objectId, {method: "GET"});
+            let response = await fetch(request);
+            if (response.status >= 400) {
+                alert(await response.text());
+                return false;
+            }
+            // Update and show the preview with the response fields.
+            video = await response.json();
+            displayVideoPreview(video)
+        } else {
+            displayVideoPreview(playlistVideos[0]);
         }
-        // Update and show the preview with the response fields.
-        video = await response.json();
-        displayPreview(video)
         document.getElementById(elements.analyzeButton).style = "display: block";
     }
 }
 
     
 // Take a Video object and preview it
-function displayPreview(video) {
+function displayVideoPreview(video) {
+    document.getElementById(elements.thumbnailImage).src = video.thumbnailUrl;
+    document.getElementById(elements.videoTitle).innerHTML = video.title;
+}
+
+function displayPlaylistPreview(video) {
     document.getElementById(elements.thumbnailImage).src = video.thumbnailUrl;
     document.getElementById(elements.videoTitle).innerHTML = video.title;
 }
