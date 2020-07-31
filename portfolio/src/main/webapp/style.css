@@ -18,6 +18,7 @@ button {
     padding: min(1vw, 1vh);
 }
 
+
 #preview-search {
     font-size: 3vh;
     width: 100%;
@@ -35,6 +36,10 @@ button {
 
 #thumbnail-image {
     width: 100%;
+}
+
+#search-section {
+    font-size: 3vh;
 }
 
 #toggle-container {
@@ -85,7 +90,7 @@ nav {
     margin: 0px;
 }
 
-nav ul{
+nav ol{
     list-style-type: none;
     width: 20vw;
     height: 100vh;
@@ -138,3 +143,4 @@ iframe {
   right: 5vh;
   z-index: 100;
 }
+

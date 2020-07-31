@@ -226,6 +226,7 @@ function clearAnalysis() {
     objectId = null;
     isPlaylist = null;
     playlistVideos = null;
+    document.getElementById("playlist-entries").innerHTML = "";
     document.getElementById(elements.analyzeButton).style.display = "none";
     document.getElementById(elements.analysisSection).style.display = "none";
 }
