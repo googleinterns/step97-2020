@@ -23,6 +23,9 @@ public class Video {
     private boolean isPublic;
     // Fetch when analyzing.
     private String captions;
+
+    // URL for when thumbnail is unavailable.
+    public static String UNAVAILABLE_THUMBNAIL_URL = "http://i.ytimg.com/vi/D5_RLA5NJAY/hqdefault.jpg";
     
     public Video(String videoId, String title, String description, String thumbnailUrl, boolean isPublic) 
       throws MalformedURLException{
@@ -77,7 +80,7 @@ public class Video {
         String thumbnailUrl;
         if (!isPublic) {
             // Set url to unavailable thumbnail.
-            thumbnailUrl = "http://i.ytimg.com/vi/D5_RLA5NJAY/hqdefault.jpg";
+            thumbnailUrl = UNAVAILABLE_THUMBNAIL_URL;
         } else {
             thumbnailUrl = maxResThumbnailUrl(snippet.getThumbnails());
         }
@@ -136,17 +139,18 @@ public class Video {
 
     // Given thumbnails, get the highest quality one.
     public static String maxResThumbnailUrl(ThumbnailDetails details) {
-            Thumbnail[] thumbnails = new Thumbnail[]{
-                details.getMaxres(),
-                details.getStandard(),
-                details.getHigh(),
-                details.getMedium(),
-                details.getDefault()
-            };
-            Thumbnail highestRes = null;
-            for (int thumbnailInd = 0; highestRes == null; thumbnailInd ++) {
-                highestRes = thumbnails[thumbnailInd];
-            }
-            return highestRes.getUrl();
+        // Thumbnails sorted from highest to lowest quality.
+        Thumbnail[] thumbnails = new Thumbnail[]{
+            details.getMaxres(),
+            details.getStandard(),
+            details.getHigh(),
+            details.getMedium(),
+            details.getDefault()
+        };
+        Thumbnail highestRes = null;
+        for (int thumbnailInd = 0; highestRes == null; thumbnailInd ++) {
+            highestRes = thumbnails[thumbnailInd];
+        }
+        return highestRes.getUrl();
     }
 }
