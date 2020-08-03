@@ -18,6 +18,14 @@ function TestVideoObject(){
     })
 }
 
+async function submitSearchQuery(){
+    var searchQuery = document.getElementById("searchQuery").value;
+    var servlet = "search?searchQuery=" + searchQuery;
+    fetch(servlet).then(response => response.json()).then((videos) => {
+        console.log(videos);
+    })
+}
+
 //CONSTS
 const FormIDs = {
 title: "video-title",

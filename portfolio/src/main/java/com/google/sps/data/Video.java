@@ -120,4 +120,17 @@ public class Video {
     public String getCaptions() {
         return captions;
     }
+
+    public String toJson(){
+        String result = "{";
+        result += "\"videoId\":\"" + videoId + "\"";
+        result += ",\"title\":\"" + title + "\"";
+        //result += ",\"description\":\"" + description + "\"";
+        result += ",\"thumbnailUrl\":\"" + thumbnailUrl + "\"";
+        result += ",\"isPublic\":\"" + isPublic + "\"";
+        //result += ",\"captions\":\"" + captions + "\"";
+        result += "}";
+        return result;
+
+    }
 }

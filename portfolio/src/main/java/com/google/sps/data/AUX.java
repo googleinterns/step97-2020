@@ -42,12 +42,13 @@ public class AUX{
     * Sets the DEVELOPER_KEY variable
     */
     private static void getDevKey(){
-        if(DEVELOPER_KEY == null){
+        /*if(DEVELOPER_KEY == null){
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
             DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
                 .asSingleEntity()
                 .getProperty("Key");
-        }
+        }*/
+        DEVELOPER_KEY = "AIzaSyBOUFTwKaYgeEpRNZvw9tt-T1QKufhbeoM";
     }
 
     public static Video videoIdToObject(String videoId) throws VideoException{
@@ -95,7 +96,7 @@ public class AUX{
     /*
     *Returns a list of video ID's based on a search query
     */
-    public static ArrayList<String> searchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
+    public static ArrayList<Video> searchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
         getDevKey();
         YouTube youtubeService = getService();
         // Define and execute the API request
@@ -108,8 +109,7 @@ public class AUX{
             searchResponse = searchRequest.setQ(query)
                 .setKey(DEVELOPER_KEY)
                 .execute();
-        }
-        catch(Exception e){
+        }catch(Exception e){
             if(DEBUG){
                 //Print error to console
                 StringWriter sw = new StringWriter();
@@ -119,11 +119,20 @@ public class AUX{
             }
         }
         
-        ArrayList<String> videoIdList = new ArrayList<String>();
+        ArrayList<Video> videoList = new ArrayList<Video>();
         for(int i = 0; i < searchResponse.getItems().size(); i++){
-            videoIdList.add(searchResponse.getItems().get(i).getId().getVideoId());
+            Video temp;
+            try{
+                temp = videoIdToObject(searchResponse.getItems().get(i).getId().getVideoId());
+                videoList.add(temp);
+            }
+            catch(VideoException e){
+                if(DEBUG){
+                    e.printStackTrace();
+                }
+            }
         }
-        return videoIdList;
+        return videoList;
     }
 
     /*
