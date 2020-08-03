@@ -1,7 +1,6 @@
 package com.google.sps.servlets;
 import com.google.sps.data.ErrorConsts;
 import com.google.sps.data.PropertyNames;
-import com.google.sps.data.SearchQuery;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
 import com.google.sps.data.VideoAnalysis;
