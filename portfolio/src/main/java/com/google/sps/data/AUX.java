@@ -86,8 +86,6 @@ public class AUX{
             }
             throw new VideoException(sw.toString());
         }
-        
-        
     }
 
     /*

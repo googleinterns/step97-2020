@@ -88,6 +88,12 @@
     <artifactId>junit-jupiter-api</artifactId>
     <version>5.7.0-M1</version>
     <scope>test</scope>
+  </dependecy>
+    
+  <dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-all</artifactId>
+    <version>1.10.19</version>
   </dependency>
 </dependencies>
 

@@ -1,6 +1,6 @@
 package com.google.sps.servlets;
+import com.google.sps.data.ErrorConsts;
 import com.google.sps.data.PropertyNames;
-import com.google.sps.data.SearchQuery;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
 import com.google.sps.data.VideoAnalysis;
@@ -34,7 +34,7 @@ public class AnalysisServlet extends HttpServlet {
         // If video id is malformed, send error status code.
         String videoId = request.getParameter(PropertyNames.VIDEO_ID);
         if (videoId == null || videoId.isEmpty()) {
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video id cannot be empty.");
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.EMPTY_VIDEO_ID);
             return;
         }
         // Check if video is in database and retrieve it if it is.
@@ -47,7 +47,7 @@ public class AnalysisServlet extends HttpServlet {
             Key analysisKey = KeyFactory.createKey(videoKey, "Analysis", 1L);
             videoAnalysisEntity = datastore.get(analysisKey);
         } catch(EntityNotFoundException e) {
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video analysis not found in database.");
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.ANALYSIS_NOT_FOUND_IN_DB);
             return;
         }
         // If there is currently no analysis, generate a new one.
@@ -60,7 +60,7 @@ public class AnalysisServlet extends HttpServlet {
                 analysis = new VideoAnalysis(video);
 
             } catch (IOException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Video analysis failed.");
+                sendErrorMessage(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ErrorConsts.ANALYSIS_FAILED);
                 return;
             }
             // Store video analysis Json as property (for now).
@@ -75,7 +75,7 @@ public class AnalysisServlet extends HttpServlet {
         // Check if datastore key for video is valid.
         String videoId = request.getParameter(PropertyNames.VIDEO_ID);
         if (videoId == null || videoId.isEmpty()) {
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video id cannot be empty.");
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.EMPTY_VIDEO_ID);
             return;
         }
         Key videoKey = KeyFactory.createKey("Video", videoId);
@@ -87,11 +87,11 @@ public class AnalysisServlet extends HttpServlet {
             Key analysisKey = KeyFactory.createKey(videoKey, "Analysis", 1L);
             videoAnalysisEntity = datastore.get(analysisKey);
         } catch (EntityNotFoundException e) {
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Video not found in database.");
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.ANALYSIS_NOT_FOUND_IN_DB);
             return;
         }
         if (videoAnalysisEntity.getProperty(PropertyNames.ANALYSIS_OBJECT_AS_JSON) == null) {
-            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "The database does not contain analysis for this video.");
+            sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, ErrorConsts.ANALYSIS_NOT_FOUND_IN_DB);
             return;
         }
         // Attempt to respond with the Json.

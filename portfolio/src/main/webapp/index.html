@@ -4,49 +4,72 @@
         <meta charset="UTF-8">
         <title>Watch Wisely</title>
         <link rel="stylesheet" href="style.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="script.js"></script>
     </head>
     <body>
-        <p> Preview a video</p>
-        <!-- Form for data servlet -->
-        <form id="video-data-form">
-            <!-- Should change to URL later -->
-            <label for="videoId">Id&nbsp;</label>
-            <input type="text" id="videoId" name="videoId"><br>
-        </form>
-        <button onclick="submitVideoData()">Load Video</button>
-        <div id = "video-box">
-            <p id = "video-title"></p>
-            <p id = "video-description"></p>
-        </div>
-        <!-- Analyze button is hidden until a video is loaded. -->
-        <button id="analyze-button" onclick="analyze()" style="display:none">Analyze</button>
-        <p>Playlists</p>
-        <form id="playlist-form">
-            <label for="playlistId">Id</label>
-            <input type="text" id="playlistId" name="playlistId">
-        </form>
-        <button id="load-playlist-button" onclick="loadPlaylist()">Load Playlist</button>
-        <!-- Display the first few video titles of the playlist in this container. -->
-        <ol id="titles-container"></ol>
-        <button id="analyze-playlist-button" onclick="analyzePlaylist()" style="display:none">Analyze Playlist</button>
-        <!-- User can click these buttons to go through the playlist analyses. -->
-        <div id="playlist-controls" style="display:none">
-            <button id="previous-video-button" onclick="prevVideo()">&lt;</button>
-            <button id="next-video-button" onclick="nextVideo()">&gt;</button>
-        </div>
-        <!-- Analysis container appears only after an analysis is returned. -->
-        <div id=analysis-container style="display:none">
-            <!-- Container for sentiment results -->
-            <div id="meter-container">
-                Sentiment: ☹<meter id="happy-meter" min="-1" max="1"></meter>😊
+        <!-- Section for searching for a video or playlist. -->
+        <section id="preview-search-container">
+            <!-- Toggle switch for searching for video vs playlist, improve styling later. -->
+            <form id="search-form">
+                <div class="form-group">
+                    <label for="id-field">ID</label>
+                    <input id="id-field" name="id" type="text"/>
+                </div>
+                <div class="form-group">
+                    <label for="is-playlist">Playlist?</label>
+                    <input id="is-playlist" name="isPlaylist" type="checkbox">
+                </div>
+                <input type="submit" style="display:none">
+            </form>
+            <button id="submit-button" onclick="submitObject()">
+                <i id="submit-loader" class="fa fa-circle-o-notch fa-spin" style="display:none"></i>Load
+            </button>
+            <div id="preview-container" style="display:none">
+                <image id ="thumbnail-image"></image>
+                <h4 id ="video-title"></h4>
             </div>
-            <!-- Flexbox to enable UI changes later on -->
-            <div id="search-flexbox">
-                <script async src="https://cse.google.com/cse.js?cx=008676578218256611896:ajzj9iccpze"></script>
-                <div class="gcse-search" data-gname="analysis-search"></div>
+            <!-- Only display analyze button when an object has been chosen. -->
+            <button id="analyze-button" onclick="analyzeObject()" style="display:none">
+                <i id="analyze-loader" class="fa fa-circle-o-notch fa-spin" style="display:none"></i>Analyze
+            </button>
+        </section>
+        <!-- Hide analysis when searching. -->
+        <section id="analysis-section" style="display:none">
+            <!-- A pane of playlist entries that will be shown for playlist analysis. -->
+            <nav id="list-pane">
+                <ol id="playlist-entries">
+                </ol>
+            </nav>
+            <!-- Analaysis pane for an individual video with an iframe, sentiment results, and search results. -->
+            <div id="analysis-pane">
+                <h2 id="analysis-title"></h2>
+                <div class="video-wrapper">
+                    <iframe id="analysis-iframe"
+                        frameborder="0"
+                        width="100%"
+                        height="100%"
+                        src="";
+                        allow="accelerometer;
+                        autoplay; encrypted-media;
+                        gyroscope;
+                        picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <h2> Sentiment Meter </h2>
+                <div id="meter-container">
+                    ☹<meter id="happy-meter" min="-1" max="1"></meter>😊
+                </div>
+                <h2> Find Out More <h2>
+                <!-- Flexbox to enable UI changes later on -->
+                <div id="search-flexbox">
+                    <script async src="https://cse.google.com/cse.js?cx=008676578218256611896:ajzj9iccpze"></script>
+                    <div class="gcse-search" data-gname="analysis-search"></div>
+                </div>
             </div>
-        </div>
+        </section>
+        <button id="top-button" onclick="goToTop()" style="display:none">Top</button>
     </body>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="elements.js"></script>
+    <script src="script.js"></script>
 </html>

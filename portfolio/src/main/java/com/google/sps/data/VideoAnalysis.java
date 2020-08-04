@@ -3,11 +3,16 @@ import com.google.sps.data.SearchQuery;
 import com.google.sps.data.SentimentTools;
 import com.google.sps.data.Video;
 import java.io.IOException;
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.Period;
 
 // Represents a video analysis, holds the results from an analysis and can also analyze a video that is passed in.
 public class VideoAnalysis {
+    private final String videoId;
+    private final String videoTitle;
+    private final URL thumbnailUrl;
     private final float sentimentScore;
     private final float sentimentMagnitude;
     private final String searchQueryString;
@@ -16,6 +21,9 @@ public class VideoAnalysis {
     
     //If given a video we will run analysis on it !!THIS IS SLOWER THAN JUST PASSING IN THE VALUES IF YOU HAVE THEM!!
     public VideoAnalysis(Video video) throws IOException {
+        this.videoId = video.getVideoId();
+        this.videoTitle = video.getTitle();
+        this.thumbnailUrl = video.getThumbnailUrl();
         SentimentTools sentimentAnalysis = new SentimentTools(video);
         SearchQuery searchQuery = new SearchQuery(video, SEARCH_QUERY_SIZE);
         this.sentimentScore = sentimentAnalysis.getScore();
@@ -25,11 +33,27 @@ public class VideoAnalysis {
     }
 
     //Pass in the results from a Video analysis to create this object
-    public VideoAnalysis(float _sentimentScore, float _sentimentMagnitude, String _searchQueryString) {
+    public VideoAnalysis(String videoId, String videoTitle, String thumbnailUrl, float _sentimentScore,
+        float _sentimentMagnitude, String _searchQueryString) throws MalformedURLException{
+        this.videoId = videoId;
+        this.videoTitle = videoTitle;
+        this.thumbnailUrl = new URL(thumbnailUrl);
         this.sentimentScore = _sentimentScore;
         this.sentimentMagnitude = _sentimentMagnitude;
         this.searchQueryString = _searchQueryString;
         this.timestamp = LocalDate.now();
+    }
+
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public String getVideoTitle() {
+        return videoTitle;
+    }
+
+    public URL getThumbnailUrl() {
+        return thumbnailUrl;
     }
 
     public float getSentimentScore(){

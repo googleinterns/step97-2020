@@ -2,6 +2,8 @@ package com.google.sps.data;
 import com.google.sps.data.PropertyNames;
 import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.PlaylistItemSnippet;
+import com.google.api.services.youtube.model.Thumbnail;
+import com.google.api.services.youtube.model.ThumbnailDetails;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Key;
@@ -22,6 +24,9 @@ public class Video {
     private boolean isPublic;
     // Fetch when analyzing.
     private String captions;
+
+    // URL for when thumbnail is unavailable.
+    public static String UNAVAILABLE_THUMBNAIL_URL = "http://i.ytimg.com/vi/D5_RLA5NJAY/hqdefault.jpg";
     
     public Video(String videoId, String title, String description, String thumbnailUrl, boolean isPublic) 
       throws MalformedURLException{
@@ -82,8 +87,14 @@ public class Video {
         String videoId = snippet.getResourceId().getVideoId();
         String videoTitle = snippet.getTitle();
         String videoDescription = snippet.getDescription();
-        String thumbnailUrl = snippet.getThumbnails().getDefault().getUrl();
         boolean isPublic = !playlistItem.getStatus().getPrivacyStatus().equals("private");
+        String thumbnailUrl;
+        if (!isPublic) {
+            // Set url to unavailable thumbnail.
+            thumbnailUrl = UNAVAILABLE_THUMBNAIL_URL;
+        } else {
+            thumbnailUrl = maxResThumbnailUrl(snippet.getThumbnails());
+        }
         return new Video(videoId, videoTitle, videoDescription, thumbnailUrl, isPublic);
     }
 
@@ -119,5 +130,38 @@ public class Video {
 
     public String getCaptions() {
         return captions;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) throws MalformedURLException{
+        this.thumbnailUrl = new URL(thumbnailUrl);
+    }
+
+    public URL getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    // Given thumbnails, get the highest quality one.
+    public static String maxResThumbnailUrl(ThumbnailDetails details) {
+        // Thumbnails sorted from highest to lowest quality.
+        Thumbnail[] thumbnails = new Thumbnail[]{
+            details.getMaxres(),
+            details.getStandard(),
+            details.getHigh(),
+            details.getMedium(),
+            details.getDefault()
+        };
+        Thumbnail highestRes = null;
+        for (int thumbnailInd = 0; highestRes == null; thumbnailInd ++) {
+            highestRes = thumbnails[thumbnailInd];
+        }
+        return highestRes.getUrl();
     }
 }
