@@ -22,7 +22,7 @@ function TestVideoObject(){
     })
 }
 
-let selectedVideoId = null;
+var videoIds = ["", "", "", "", ""];
 
 async function submitSearchQuery(){
     var searchQuery = document.getElementById("searchQuery").value;
@@ -32,6 +32,7 @@ async function submitSearchQuery(){
         var link;
         var imgDiv = document.getElementById("search-results");
         var br = document.createElement("br");
+        //videos.length is 5
         for(let i = 0; i < videos.videos.length; i++){
             img = document.createElement("img"); 
             img.src = videos.videos[i].thumbnailUrl;
@@ -39,8 +40,8 @@ async function submitSearchQuery(){
             var a = document.createElement("a");
             link = document.createTextNode(videos.videos[i].title);
             a.appendChild(link);
-            selectedVideoId = videos.videos[i].videoId;
-            a.href = "javascript:searchResultClicked(selectedVideoId)";
+            videoIds[i] = videos.videos[i].videoId;
+            a.href = "javascript:searchResultClicked(videoIds[" + i + "])";
             imgDiv.appendChild(a);
             var br = document.createElement("br");
             imgDiv.appendChild(br);
@@ -50,8 +51,8 @@ async function submitSearchQuery(){
 }
 
 function searchResultClicked(videoId){
-    document.getElementById("videoId").value = videoId;
-    submitVideoData();
+    document.getElementById("id-field").value = videoId;
+    submitVideo();
 }
 
 // The ID of the object currently being analyzed.
