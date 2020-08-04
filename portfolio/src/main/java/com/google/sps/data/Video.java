@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.net.MalformedURLException;
+import com.google.sps.data.VideoException;
 
 // Represents a video, including its ID, title, description, and captions.
 public class Video {
@@ -36,6 +37,16 @@ public class Video {
         this.isPublic = isPublic;
         // Captions not yet initialized.
         this.captions = null;
+    }
+
+    public Video(String videoId, String title, String description, String thumbnailUrl, String captions, boolean isPublic) 
+      throws MalformedURLException{
+        this.videoId = videoId;
+        this.title = title;
+        this.description = description;
+        this.thumbnailUrl = new URL(thumbnailUrl);
+        this.isPublic = isPublic;
+        this.captions = captions;
     }
 
     // Create video from videoId.

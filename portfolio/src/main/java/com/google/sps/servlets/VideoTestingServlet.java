@@ -21,13 +21,14 @@ import java.security.GeneralSecurityException;
 
 @WebServlet("/VideoTesting")
 public class VideoTestingServlet extends HttpServlet {
-    private static String videoId = "-KqjH7mWggg";
+    private final static String TEST_VIDEO_ID = "-KqjH7mWggg";
+    private final static String TEST_VIDEO_ID_2 = "asdfhkials";
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try{
-            Video testVideo = AUX.VideoIdToObject(videoId);
-            response.getWriter().println("Test video Title: " + testVideo.getTitle());
+            String whereIsV = AUX.youtubeUrlToId("yesv=maybe&x");
+            response.getWriter().println(whereIsV);
         }
         catch(Exception e){
             //Print errors to console

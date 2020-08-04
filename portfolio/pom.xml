@@ -84,6 +84,13 @@
   </dependency>
 
   <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-api</artifactId>
+    <version>5.7.0-M1</version>
+    <scope>test</scope>
+  </dependecy>
+    
+  <dependency>
     <groupId>org.mockito</groupId>
     <artifactId>mockito-all</artifactId>
     <version>1.10.19</version>
@@ -99,6 +106,7 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
+          <!-- TODO: set project ID. -->
           <deploy.projectId>PROJECT_ID_HERE</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>

@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Text;
 import com.google.sps.data.AUX;
+import com.google.sps.data.VideoException;
 import com.google.sps.data.ErrorConsts;
 import com.google.sps.data.PropertyNames;
 import com.google.sps.data.Video;
