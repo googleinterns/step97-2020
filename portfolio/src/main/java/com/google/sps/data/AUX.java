@@ -27,6 +27,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AUX{
     private static String DEVELOPER_KEY = null;
@@ -48,7 +50,7 @@ public class AUX{
         }
     }
 
-    public static Video videoIdToObject(String videoId) throws VideoException{
+    public static Video VideoIdToObject(String videoId) throws VideoException{
         getDevKey();
 
         VideoListResponse videoResponse = new VideoListResponse();
@@ -91,7 +93,7 @@ public class AUX{
     /*
     *Returns a list of video ID's based on a search query
     */
-    public static ArrayList<String> searchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{git 
+    public static ArrayList<Video> searchQueryToListOfVideos(String query) throws IOException, GeneralSecurityException{
         getDevKey();
         YouTube youtubeService = getService();
         // Define and execute the API request
@@ -104,8 +106,7 @@ public class AUX{
             searchResponse = searchRequest.setQ(query)
                 .setKey(DEVELOPER_KEY)
                 .execute();
-        }
-        catch(Exception e){
+        }catch(Exception e){
             if(DEBUG){
                 //Print error to console
                 StringWriter sw = new StringWriter();
@@ -115,11 +116,36 @@ public class AUX{
             }
         }
         
-        ArrayList<String> videoIdList = new ArrayList<String>();
+        ArrayList<Video> videoList = new ArrayList<Video>();
         for(int i = 0; i < searchResponse.getItems().size(); i++){
-            videoIdList.add(searchResponse.getItems().get(i).getId().getVideoId());
+            Video temp;
+            try{
+                temp = VideoIdToObject(searchResponse.getItems().get(i).getId().getVideoId());
+                videoList.add(temp);
+            }
+            catch(VideoException e){
+                if(DEBUG){
+                    e.printStackTrace();
+                }
+            }
         }
-        return videoIdList;
+        return videoList;
+    }
+
+    /*
+    *Retrieve video id from youtube url
+    *@return a video id as string
+    */
+    public static String youtubeUrlToId(String youtubeUrl) throws IllegalArgumentException{
+        String pattern = "(https://youtu.be/|https://www.youtube.com/watch\\?v=)(\\w+).*";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(youtubeUrl);
+
+        if(m.find()){
+            return m.group(2);
+        }else{
+            return "";
+        }
     }
 
     private static YouTube getService() throws IOException, GeneralSecurityException{
@@ -131,6 +157,8 @@ public class AUX{
 
     /*
     * Returns the captions of a video if any are available
+    * @param
+    * @returns
     */
     private static String getVideoCaptions(String videoId){
         try{

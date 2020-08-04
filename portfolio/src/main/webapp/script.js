@@ -12,6 +12,49 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function init(){
+    document.getElementById("search-results").style.display = "none";
+}
+
+function TestVideoObject(){
+    fetch("VideoTesting").then(response => response.text()).then((testValue) => {
+        console.log(testValue);
+    })
+}
+
+var videoIds = ["", "", "", "", ""];
+
+async function submitSearchQuery(){
+    var searchQuery = document.getElementById("searchQuery").value;
+    var servlet = "search?searchQuery=" + searchQuery;
+    fetch(servlet).then(response => response.json()).then((videos) => {
+        var img;
+        var link;
+        var imgDiv = document.getElementById("search-results");
+        var br = document.createElement("br");
+        //videos.length is 5
+        for(let i = 0; i < videos.videos.length; i++){
+            img = document.createElement("img"); 
+            img.src = videos.videos[i].thumbnailUrl;
+            imgDiv.appendChild(img);
+            var a = document.createElement("a");
+            link = document.createTextNode(videos.videos[i].title);
+            a.appendChild(link);
+            videoIds[i] = videos.videos[i].videoId;
+            a.href = "javascript:searchResultClicked(videoIds[" + i + "])";
+            imgDiv.appendChild(a);
+            var br = document.createElement("br");
+            imgDiv.appendChild(br);
+        }
+    })
+    document.getElementById("search-results").style.display = "block";
+}
+
+function searchResultClicked(videoId){
+    document.getElementById("id-field").value = videoId;
+    submitVideo();
+}
+
 // The ID of the object currently being analyzed.
 let objectId = null;
 // Is the object a playlist?
@@ -36,7 +79,7 @@ async function submitVideo() {
     // Request to store the video in the database.
     let request = new Request("/data?videoId=" + curId, {method: "POST"});
     let response = await fetch(request);
-    const responseText = await response.text()
+    const responseText = await response.text();
     // Alert the user if any errors occurred.
     if (response.status >= 400) {
         alert(responseText);

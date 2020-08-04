@@ -5,9 +5,17 @@
         <title>Watch Wisely</title>
         <link rel="stylesheet" href="style.css">
     </head>
-    <body>
+    <body onload="init()">
         <!-- Section for searching for a video or playlist. -->
         <section id="preview-search-container">
+            <!-- Form for Search bar -->
+            <form id="search-query-form">
+                <label for="searchQuery">Search&nbsp;</label>
+                <input type="text" id="searchQuery" name="searchQuery"><br>
+            </form>
+            <!-- Division for search results -->
+            <div id="search-results" class=gridContainer style="height:200px;width:600px;border:1px solid #4e4e4e;font:16px Arial, Serif;overflow:auto;"></div>
+            <button onclick="submitSearchQuery()">Search</button>
             <!-- Toggle switch for searching for video vs playlist, improve styling later. -->
             <form id="search-form">
                 <div class="form-group">

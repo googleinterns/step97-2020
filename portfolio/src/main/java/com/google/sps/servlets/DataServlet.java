@@ -83,16 +83,13 @@ public class DataServlet extends HttpServlet {
             Video video;
             try {
                 video = AUX.VideoIdToObject(videoId);
-            } catch (IOException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, ErrorConsts.UNABLE_TO_RETRIEVE);
+            } catch (VideoException e) {
+                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
                 return;
             } catch (IndexOutOfBoundsException e) {
                 sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, ErrorConsts.NO_VIDEO_QUERY_MATCHES);
                 return;
-            } catch (GeneralSecurityException e) {
-                sendErrorMessage(response, HttpServletResponse.SC_NOT_FOUND, ErrorConsts.SECURITY_EXCEPTION);
-                return;
-            }
+            } 
             Entity videoEntity = Video.videoToDatastoreEntity(video);
             datastore.put(videoEntity);
             // Create a new analysis entry using custom keys.

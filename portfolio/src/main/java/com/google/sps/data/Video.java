@@ -132,6 +132,18 @@ public class Video {
         return captions;
     }
 
+    public String toJson(){
+        String result = "{";
+        result += "\"videoId\":\"" + videoId + "\"";
+        result += ",\"title\":\"" + title + "\"";
+        //result += ",\"description\":\"" + description + "\"";
+        result += ",\"thumbnailUrl\":\"" + thumbnailUrl + "\"";
+        result += ",\"isPublic\":\"" + isPublic + "\"";
+        //result += ",\"captions\":\"" + captions + "\"";
+        result += "}";
+        return result;
+    }
+
     public void setThumbnailUrl(String thumbnailUrl) throws MalformedURLException{
         this.thumbnailUrl = new URL(thumbnailUrl);
     }
