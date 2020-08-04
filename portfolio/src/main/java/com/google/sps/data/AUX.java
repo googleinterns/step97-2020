@@ -42,15 +42,16 @@ public class AUX{
     * Sets the DEVELOPER_KEY variable
     */
     private static void getDevKey(){
-        if(DEVELOPER_KEY == null){
+        /*if(DEVELOPER_KEY == null){
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
             DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
                 .asSingleEntity()
                 .getProperty("Key");
-        }
+        }*/
+        DEVELOPER_KEY = "AIzaSyBOUFTwKaYgeEpRNZvw9tt-T1QKufhbeoM";
     }
 
-    public static Video videoIdToObject(String videoId) throws VideoException{
+    public static Video VideoIdToObject(String videoId) throws VideoException{
         getDevKey();
 
         VideoListResponse videoResponse = new VideoListResponse();
@@ -88,8 +89,6 @@ public class AUX{
             }
             throw new VideoException(sw.toString());
         }
-        
-        
     }
 
     /*
@@ -122,7 +121,7 @@ public class AUX{
         for(int i = 0; i < searchResponse.getItems().size(); i++){
             Video temp;
             try{
-                temp = videoIdToObject(searchResponse.getItems().get(i).getId().getVideoId());
+                temp = VideoIdToObject(searchResponse.getItems().get(i).getId().getVideoId());
                 videoList.add(temp);
             }
             catch(VideoException e){
