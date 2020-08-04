@@ -7,13 +7,17 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="script.js"></script>
     </head>
-    <body>
+    <body onload="init()">
         <p> Preview a video</p>
         <!-- Form for Search bar -->
         <form id="search-form">
             <label for="searchQuery">Query&nbsp;</label>
             <input type="text" id="searchQuery" name="searchQuery"><br>
         </form>
+        <!-- Division for search results -->
+        <div id="search-results" class=gridContainer style="height:200px;width:600px;border:1px solid #4e4e4e;font:16px Arial, Serif;overflow:auto;">
+            
+        </div>
         <button onclick="submitSearchQuery()">Search</button>
         <!-- Form for data servlet -->
         <form id="video-data-form">
@@ -22,7 +26,7 @@
             <input type="text" id="videoId" name="videoId"><br>
         </form>
         <button onclick="submitVideoData()">Load Video</button>
-        <button onclick="TestVideoObject()"> Test </button>
+        
         <div id = "video-box">
             <p id = "video-title"></p>
             <p id = "video-description"></p>

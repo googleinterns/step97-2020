@@ -33,7 +33,6 @@ public class SearchServlet extends HttpServlet {
             }
             videosJson = videosJson + "]}";
             response.getWriter().println(videosJson);
-            System.out.println(videosJson);
         }catch(Exception e){
             if(DEBUG){
                 e.printStackTrace();

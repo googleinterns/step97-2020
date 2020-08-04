@@ -12,18 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function init(){
+    document.getElementById("search-results").style.display = "none";
+}
+
 function TestVideoObject(){
     fetch("VideoTesting").then(response => response.text()).then((testValue) => {
         console.log(testValue);
     })
 }
 
+let selectedVideoId = null;
+
 async function submitSearchQuery(){
     var searchQuery = document.getElementById("searchQuery").value;
     var servlet = "search?searchQuery=" + searchQuery;
     fetch(servlet).then(response => response.json()).then((videos) => {
-        console.log(videos);
+        var img;
+        var link;
+        var imgDiv = document.getElementById("search-results");
+        var br = document.createElement("br");
+        for(let i = 0; i < videos.videos.length; i++){
+            img = document.createElement("img"); 
+            img.src = videos.videos[i].thumbnailUrl;
+            imgDiv.appendChild(img);
+            var a = document.createElement("a");
+            link = document.createTextNode(videos.videos[i].title);
+            a.appendChild(link);
+            selectedVideoId = videos.videos[i].videoId;
+            a.href = "javascript:searchResultClicked(selectedVideoId)";
+            imgDiv.appendChild(a);
+            var br = document.createElement("br");
+            imgDiv.appendChild(br);
+        }
     })
+    document.getElementById("search-results").style.display = "block";
+}
+
+function searchResultClicked(videoId){
+    document.getElementById("videoId").value = videoId;
+    submitVideoData();
 }
 
 //CONSTS
