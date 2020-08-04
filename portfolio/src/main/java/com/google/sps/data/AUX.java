@@ -42,13 +42,12 @@ public class AUX{
     * Sets the DEVELOPER_KEY variable
     */
     private static void getDevKey(){
-        /*if(DEVELOPER_KEY == null){
+        if(DEVELOPER_KEY == null){
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
             DEVELOPER_KEY = (String) datastore.prepare(new Query("YoutubeAPIKey"))
                 .asSingleEntity()
                 .getProperty("Key");
-        }*/
-        DEVELOPER_KEY = "AIzaSyBOUFTwKaYgeEpRNZvw9tt-T1QKufhbeoM";
+        }
     }
 
     public static Video videoIdToObject(String videoId) throws VideoException{
@@ -96,7 +95,7 @@ public class AUX{
     /*
     *Returns a list of video ID's based on a search query
     */
-    public static ArrayList<Video> searchQueryToListOfVideoID(String query) throws IOException, GeneralSecurityException{
+    public static ArrayList<Video> searchQueryToListOfVideos(String query) throws IOException, GeneralSecurityException{
         getDevKey();
         YouTube youtubeService = getService();
         // Define and execute the API request

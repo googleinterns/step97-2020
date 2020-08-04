@@ -20,10 +20,9 @@ public class SearchServlet extends HttpServlet {
         try{
             String searchQuery = request.getParameter("searchQuery");
             if (searchQuery == null || searchQuery.isEmpty()) {
-                //sendErrorMessage(response, HttpServletResponse.SC_BAD_REQUEST, "Search bar cannot be empty.");
                 return;
             }
-            ArrayList<Video> videos = AUX.searchQueryToListOfVideoID(searchQuery);
+            ArrayList<Video> videos = AUX.searchQueryToListOfVideos(searchQuery);
             String videosJson = "{\"videos\":[";
             for(int i = 0; i < videos.size(); i++){
                 videosJson = videosJson + videos.get(i).toJson();
