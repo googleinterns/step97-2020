@@ -2,13 +2,8 @@ html {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-section {
-    height: 100vh;
-}
-
 h2 {
     text-align: center;
-    font-size: 3em;
     font-weight:normal;
 }
 
@@ -26,24 +21,57 @@ button {
     color: white;
     cursor: pointer;
     padding: min(1vw, 1vh);
+    margin: min(1vw, 1vh);
 }
 
-
 #preview-search-container {
-    font-size: 3vh;
+    min-height: 100vh;
+    font-size: min(3vw, 3vh);
     width: 100vw;
-    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px;
-    margin: 0px;
+}
+
+#search-results {
+    max-height: 80vh;
+    max-width: 80vw;
+    border: 0.2vh solid;
+    overflow-y: scroll;
+    overscroll-behavior-y: contain;
+}
+
+.result-flexbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    border-bottom: 0.2vh solid;
+}
+
+.result-flexbox:hover {
+    background-color: #f0f0f0;
+}
+
+.result-thumbnail {
+    width: 15vw;
+    max-height: 20vh;
+    margin: min(1vw, 1vh);
+}
+
+#preview-search-container > form {
+    margin: min(1vw, 1vh);
+}
+
+#preview-search-container > div {
+    margin: min(1vw, 1vh);
 }
 
 #thumbnail-image {
-    max-width: 70vw;
-    max-height: 50vh;
+    display: block;
+    width: 70vw;
+    max-height: 100vh;
+    margin: min(1vw, 1vh) auto;
 }
 
 #toggle-container {
@@ -52,17 +80,8 @@ button {
     justify-content: center;
 }
 
-#select-video {
-    margin: 0;
-}
-
-#select-playlist {
-    display:inline;
-    margin: 0;
-}
-
 input[type="text"] {
-    font-size: 3vh;
+    font-size: min(3vw, 3vh);
 }
 
 input[type="checkbox"] {
@@ -72,11 +91,6 @@ input[type="checkbox"] {
 
 #submit-button {
     display: block;
-    margin: 1vh auto;
-}
-
-#analyze-button {
-    margin: 1vh auto;
 }
 
 .fa {
@@ -85,9 +99,11 @@ input[type="checkbox"] {
 }
 
 #analysis-section {
+    height: 100vh;
     display: flex;
     flex-direction: row;
     margin: 0px;
+    border-top: 0.2vh solid;
 }
 
 nav {
@@ -102,11 +118,15 @@ nav ol{
     overscroll-behavior-y: contain;
     margin: 0px;
     padding: 0px;
-    border: 0.2vh solid;
+    border-right: 0.2vh solid;
 }
 
 .video-entry {
     border-bottom: 0.2vh solid;
+}
+
+.video-entry:hover {
+    background-color: #f0f0f0;
 }
 
 #analysis-pane {

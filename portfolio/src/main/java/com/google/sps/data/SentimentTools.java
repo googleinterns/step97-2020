@@ -26,7 +26,7 @@ public class SentimentTools {
 
     //If the user passes a video in, we grab captions from the video.
     public SentimentTools (Video video) throws IOException{
-        this(video.getCaptions());
+        this(video.getDescription() + " " + video.getCaptions());
     }
 
     public SentimentTools (String captions) throws IOException {

@@ -65,9 +65,8 @@ public class AUX{
             com.google.api.services.youtube.model.Video video = videoResponse.getItems().get(0);
             String videoTitle = video.getSnippet().getTitle();
             String videoDescription = video.getSnippet().getLocalized().getDescription();
-            String thumbnailUrl = video.getSnippet().getThumbnails().getDefault().getUrl();
-            String videoCaptions = getVideoCaptions(videoId);
-            Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, videoCaptions, /*isPublic*/ true);
+            String thumbnailUrl = Video.maxResThumbnailUrl(video.getSnippet().getThumbnails());
+            Video result = new Video(videoId, videoTitle, videoDescription, thumbnailUrl, /*isPublic*/ true);
             return result;
         }
         catch (IOException e) {
@@ -160,7 +159,7 @@ public class AUX{
     * @param
     * @returns
     */
-    private static String getVideoCaptions(String videoId){
+    public static String getVideoCaptions(String videoId){
         try{
             GET_URL = GET_URL_BASE_URL + videoId;
             URL obj = new URL(GET_URL);
