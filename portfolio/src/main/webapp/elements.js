@@ -1,7 +1,11 @@
 // HTML element names for the prototype UI.
 elements = {
+    searchQueryForm: "search-query-form",
+    searchQuery: "search-query",
+    searchResults: "search-results",
+    searchLoader: "search-loader",
     idField: "id-field",
-    searchForm: "search-form",
+    submitForm: "submit-form",
     isPlaylist: "is-playlist",
     submitLoader: "submit-loader",
     previewContainer: "preview-container",

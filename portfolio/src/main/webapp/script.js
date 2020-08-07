@@ -12,8 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// The ID of the object currently being analyzed.
+let objectId = null;
+// Is the object a playlist?
+let isPlaylist = false;
+// List of videos for current playlist.
+let playlistVideos = null;
+
 function init(){
-    document.getElementById("search-results").style.display = "none";
+    document.getElementById(elements.searchResults).style.display = "none";
 }
 
 function TestVideoObject(){
@@ -25,50 +32,58 @@ function TestVideoObject(){
 var videoIds = ["", "", "", "", ""];
 
 async function submitSearchQuery(){
-    var searchQuery = document.getElementById("searchQuery").value;
+    document.getElementById(elements.searchResults).innerHTML = "";
+    document.getElementById(elements.searchLoader).style.display = "";
+    var searchQuery = document.getElementById(elements.searchQuery).value;
     var servlet = "search?searchQuery=" + searchQuery;
-    fetch(servlet).then(response => response.json()).then((videos) => {
+    // Wait until all results are loaded, then display them.
+    await fetch(servlet).then(response => response.json()).then((results) => {
         var img;
         var link;
-        var imgDiv = document.getElementById("search-results");
+        var resultsDiv = document.getElementById(elements.searchResults);
         var br = document.createElement("br");
         //videos.length is 5
-        for(let i = 0; i < videos.videos.length; i++){
-            img = document.createElement("img"); 
-            img.src = videos.videos[i].thumbnailUrl;
-            imgDiv.appendChild(img);
-            var a = document.createElement("a");
-            link = document.createTextNode(videos.videos[i].title);
-            a.appendChild(link);
-            videoIds[i] = videos.videos[i].videoId;
-            a.href = "javascript:searchResultClicked(videoIds[" + i + "])";
-            imgDiv.appendChild(a);
-            var br = document.createElement("br");
-            imgDiv.appendChild(br);
+        for(let i = 0; i < results.videos.length; i++){
+            resultsDiv.innerHTML +=
+            `<div id="result-` + i + `" class="result-flexbox">
+                <img class="result-thumbnail" src="` + results.videos[i].thumbnailUrl + `">
+                <div>` + results.videos[i].title + `</div>
+            </div>`;
+            videoIds[i] = results.videos[i].videoId;
         }
-    })
-    document.getElementById("search-results").style.display = "block";
+        for (let i = 0; i < results.videos.length; i ++) {
+            document.getElementById("result-" + i).onclick = function() {
+                searchResultClicked(videoIds[i]);
+            };
+        }
+    });
+    document.getElementById(elements.searchLoader).style.display = "none";
+    document.getElementById(elements.searchResults).style.display = "block";
 }
 
-function searchResultClicked(videoId){
-    document.getElementById("id-field").value = videoId;
-    submitVideo();
+async function searchResultClicked(videoId){
+    document.getElementById(elements.idField).value = videoId;
+    objectId = videoId;
+    isPlaylist = false;
+    await submitObject();
+    window.location.hash = "";
+    window.location.hash = "analyze-button";
 }
 
-// The ID of the object currently being analyzed.
-let objectId = null;
-// Is the object a playlist?
-let isPlaylist = false;
-// List of videos for current playlist.
-let playlistVideos = null;
+// Listener for searching for a video.
+async function searchListener(e) {
+    e.preventDefault();
+    await submitSearchQuery();
+};
+document.getElementById(elements.searchQueryForm).addEventListener('submit', searchListener, false);
 
 // Listener for submitting an object (video or playlist).
-function formListener(e) {
-    submitObject();
+async function submitListener(e) {
     e.preventDefault();
+    await submitObject();
 };
 
-document.getElementById(elements.searchForm).addEventListener('submit', formListener, false);
+document.getElementById(elements.submitForm).addEventListener('submit', submitListener, false);
 
 // Submit video so that data can be stored by DataServlet.
 // Returns true if sucessful.
@@ -218,12 +233,11 @@ async function analyzeObject() {
     // If successful, jump to analysis.
     if (successful) {
         document.getElementById(elements.analysisSection).style.display = "flex";
+        document.getElementById(elements.analysisSection).style.justifyContent = isPlaylist ? "" : "center";
         window.location.hash="";
         window.location.hash = "analysis-section";
-        // Hide old search elements.
-        document.getElementById(elements.idField).value = "";
-        document.getElementById(elements.previewContainer).style.display = "none";
-        document.getElementById(elements.analyzeButton).style.display = "none";
+        // Reset old search elements to prepare for new search.
+        clearSearch();
     }
 }
 
@@ -268,6 +282,16 @@ function clearAnalysis() {
     document.getElementById(elements.playlistEntries).innerHTML = "";
     document.getElementById(elements.analyzeButton).style.display = "none";
     document.getElementById(elements.analysisSection).style.display = "none";
+}
+
+// Reset search section.
+function clearSearch() {
+    document.getElementById(elements.searchResults).style.display = "none";
+    document.getElementById(elements.previewContainer).style.display = "none";
+    document.getElementById(elements.analyzeButton).style.display = "none";
+    document.getElementById(elements.searchQuery).value = "";
+    document.getElementById(elements.searchResults).innerHTML = "";
+    document.getElementById(elements.idField).value = "";
 }
 
 // Functions for a button to go top of page.

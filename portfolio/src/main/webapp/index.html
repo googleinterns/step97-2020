@@ -2,22 +2,27 @@
 <html lang="en-US">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="A video analyzer for Youtube">
         <title>Watch Wisely</title>
         <link rel="stylesheet" href="style.css">
     </head>
-    <body onload="init()">
+    <body>
         <!-- Section for searching for a video or playlist. -->
         <section id="preview-search-container">
             <!-- Form for Search bar -->
             <form id="search-query-form">
-                <label for="searchQuery">Search&nbsp;</label>
-                <input type="text" id="searchQuery" name="searchQuery"><br>
+                <label for="search-query">Search&nbsp;</label>
+                <input type="text" id="search-query" name="searchQuery">
+                <input type="submit" style="display:none">
             </form>
+            <button onclick="submitSearchQuery()">
+                 <i id="search-loader" class="fa fa-circle-o-notch fa-spin" style="display:none"></i>Search
+            </button>
             <!-- Division for search results -->
-            <div id="search-results" class=gridContainer style="height:200px;width:600px;border:1px solid #4e4e4e;font:16px Arial, Serif;overflow:auto;"></div>
-            <button onclick="submitSearchQuery()">Search</button>
+            <div id="search-results" class=gridContainer style="display:none"></div>
             <!-- Toggle switch for searching for video vs playlist, improve styling later. -->
-            <form id="search-form">
+            <form id="submit-form">
                 <div class="form-group">
                     <label for="id-field">ID</label>
                     <input id="id-field" name="id" type="text"/>
@@ -56,10 +61,7 @@
                         width="100%"
                         height="100%"
                         src="";
-                        allow="accelerometer;
-                        autoplay; encrypted-media;
-                        gyroscope;
-                        picture-in-picture"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
                     </iframe>
                 </div>
@@ -67,7 +69,7 @@
                 <div id="meter-container">
                     ☹<meter id="happy-meter" min="-1" max="1"></meter>😊
                 </div>
-                <h2> Find Out More <h2>
+                <h2> Find Out More </h2>
                 <!-- Flexbox to enable UI changes later on -->
                 <div id="search-flexbox">
                     <script async src="https://cse.google.com/cse.js?cx=008676578218256611896:ajzj9iccpze"></script>
@@ -75,7 +77,7 @@
                 </div>
             </div>
         </section>
-        <button id="top-button" onclick="goToTop()" style="display:none">Top</button>
+        <button id="top-button" onclick="goToTop()" style="display:none">New Analysis</button>
     </body>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="elements.js"></script>

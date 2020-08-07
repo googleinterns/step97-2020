@@ -49,6 +49,8 @@ public class SearchQuery {
                 // Generally important words seemed to be above 0.15 and unimportant words seemed to be less than 0.10.
                 .filter(e -> e.getSalience() > 0.12)
                 .map(e -> e.getName())
+                .distinct()
+                .limit(10)
                 .collect(Collectors.toList());
         }
         queryText = filterKeywords(keywordList, querySize);
